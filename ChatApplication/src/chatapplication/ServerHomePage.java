@@ -5,8 +5,9 @@
  */
 package chatapplication;
 
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import chatapplication.Exceptions.InvalidPortException;
+import java.io.IOException;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,29 +20,23 @@ public class ServerHomePage extends javax.swing.JFrame {
      * Creates new form ServerHomePage
      */
     public ServerHomePage() {
-        
         initComponents();
-        this.tfHost.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-             // text was changed
-                System.out.println("Hello");
-            }
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                                System.out.println("Hello");
-
-            // text was deleted
-            }
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                                System.out.println("Hello");
-
-            // text was inserted
-            }
-        });
+        this.tfHost.setEditable(false);
     }
-
+    
+    public void startServer(){
+        try {
+            String portStr = tfPort.getText().trim();
+            if(MyServer.checkPort(portStr)){
+                myServer = new MyServer(Integer.parseInt(portStr));
+                myServer.start();
+                pnlServerSettings.setVisible(false);
+                pnlServerLog.setVisible(true);
+            }
+        } catch (IOException | InvalidPortException e) {
+            JOptionPane.showMessageDialog(this, "Error occured while starting server.Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -51,7 +46,8 @@ public class ServerHomePage extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
+        pnlMain = new javax.swing.JPanel();
+        pnlServerSettings = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         tfHost = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
@@ -61,19 +57,23 @@ public class ServerHomePage extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         lblUrl = new javax.swing.JLabel();
         btnStart = new javax.swing.JButton();
+        pnlServerLog = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        jLabel6 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        pnlMain.setPreferredSize(new java.awt.Dimension(400, 150));
+        pnlMain.setLayout(new java.awt.CardLayout());
+
+        pnlServerSettings.setPreferredSize(new java.awt.Dimension(400, 150));
+
         jLabel1.setText("Start ChatApplication's server");
 
-        tfHost.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
-                tfHostCaretPositionChanged(evt);
-            }
-            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
-                tfHostInputMethodTextChanged(evt);
-            }
-        });
+        tfHost.setText("localhost");
+        tfHost.setToolTipText("");
 
         jLabel2.setText("Host:");
 
@@ -92,48 +92,48 @@ public class ServerHomePage extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout pnlServerSettingsLayout = new javax.swing.GroupLayout(pnlServerSettings);
+        pnlServerSettings.setLayout(pnlServerSettingsLayout);
+        pnlServerSettingsLayout.setHorizontalGroup(
+            pnlServerSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlServerSettingsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGroup(pnlServerSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlServerSettingsLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnStart))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(pnlServerSettingsLayout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(tfHost, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel1)
                     .addComponent(jLabel5)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlServerSettingsLayout.createSequentialGroup()
+                        .addGroup(pnlServerSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
                             .addComponent(jLabel4))
-                        .addGap(27, 100, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(27, 99, Short.MAX_VALUE)
+                        .addGroup(pnlServerSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(tfPort, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblUrl))))
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        pnlServerSettingsLayout.setVerticalGroup(
+            pnlServerSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlServerSettingsLayout.createSequentialGroup()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnlServerSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tfHost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnlServerSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(tfPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnlServerSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(lblUrl))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -141,38 +141,68 @@ public class ServerHomePage extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        pnlMain.add(pnlServerSettings, "card3");
+
+        pnlServerLog.setPreferredSize(new java.awt.Dimension(400, 150));
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
+
+        jLabel6.setText("jLabel6");
+
+        jButton1.setText("jButton1");
+
+        javax.swing.GroupLayout pnlServerLogLayout = new javax.swing.GroupLayout(pnlServerLog);
+        pnlServerLog.setLayout(pnlServerLogLayout);
+        pnlServerLogLayout.setHorizontalGroup(
+            pnlServerLogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlServerLogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlServerLogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .addGroup(pnlServerLogLayout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1)))
+                .addContainerGap())
+        );
+        pnlServerLogLayout.setVerticalGroup(
+            pnlServerLogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlServerLogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlServerLogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(jButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))
+        );
+
+        pnlMain.add(pnlServerLog, "card2");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(10, 10, 10)
+                .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
-        // TODO add your handling code here:
+        startServer();
     }//GEN-LAST:event_btnStartActionPerformed
-
-    private void tfHostInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_tfHostInputMethodTextChanged
-        // TODO add your handling code here:
-        System.out.println("Hellooooo");
-    }//GEN-LAST:event_tfHostInputMethodTextChanged
-
-    private void tfHostCaretPositionChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_tfHostCaretPositionChanged
-        // TODO add your handling code here:
-                System.out.println("Hellooooo");
-
-    }//GEN-LAST:event_tfHostCaretPositionChanged
 
     /**
      * @param args the command line arguments
@@ -211,13 +241,19 @@ public class ServerHomePage extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnStart;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JLabel lblUrl;
+    private javax.swing.JPanel pnlMain;
+    private javax.swing.JPanel pnlServerLog;
+    private javax.swing.JPanel pnlServerSettings;
     private javax.swing.JTextField tfHost;
     private javax.swing.JTextField tfPort;
     // End of variables declaration//GEN-END:variables
