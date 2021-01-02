@@ -52,6 +52,16 @@ public class Client {
     }
     
     /**
+     * Server'a disconnect talebi gönderir.
+     */
+    public void disconnect() throws IOException  {
+         final String disconnectMsg = "/!d//!e/";
+         this.sendRequestToServer(disconnectMsg);
+         this.dos.close();
+         this.socket.close();
+    }
+    
+    /**
      * Server'a bağlanma talebi gönderir ve Server tarafından
      * eşsiz bir anahtar atanarak clientListt listesine eklenir.
      * @throws IOException 

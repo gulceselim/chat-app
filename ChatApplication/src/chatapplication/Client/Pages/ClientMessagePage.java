@@ -8,6 +8,8 @@ package chatapplication.Client.Pages;
 import chatapplication.Client.Client;
 import javax.swing.*;
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -33,10 +35,22 @@ public class ClientMessagePage extends JFrame {
     /**
      * tfMessage içerisindeki mesajı okur ve Client tarafından bağlanılan Server'a gönderir.
      */
-    void sendMessage() {
+    public void sendMessage() {
         final String message = tfMessage.getText();
         this.client.sendMessage(message);
-        System.out.println("Client sent");
+        tfMessage.setText("");
+    }
+    
+    /**
+     * Client ile Server arasındaki bağlantıyı koparır.
+     */
+    void disconnect() {   
+        try {
+            this.client.disconnect();
+            this.dispose();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Error occured while disconnecting from server. Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -50,8 +64,15 @@ public class ClientMessagePage extends JFrame {
 
         tfMessage = new javax.swing.JTextField();
         btnSendMessage = new javax.swing.JButton();
+        btnDisconnect = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         tfMessage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -66,6 +87,13 @@ public class ClientMessagePage extends JFrame {
             }
         });
 
+        btnDisconnect.setText("Disconnect");
+        btnDisconnect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDisconnectActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -74,13 +102,17 @@ public class ClientMessagePage extends JFrame {
                 .addContainerGap()
                 .addComponent(tfMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSendMessage, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnDisconnect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnSendMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(154, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(btnDisconnect)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 122, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tfMessage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSendMessage))
@@ -98,8 +130,17 @@ public class ClientMessagePage extends JFrame {
         this.sendMessage();
     }//GEN-LAST:event_btnSendMessageActionPerformed
 
+    private void btnDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisconnectActionPerformed
+        this.disconnect();
+    }//GEN-LAST:event_btnDisconnectActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        this.disconnect();
+    }//GEN-LAST:event_formWindowClosing
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDisconnect;
     private javax.swing.JButton btnSendMessage;
     private javax.swing.JTextField tfMessage;
     // End of variables declaration//GEN-END:variables

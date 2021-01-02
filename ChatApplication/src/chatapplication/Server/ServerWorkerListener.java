@@ -5,17 +5,12 @@
  */
 package chatapplication.Server;
 
-import chatapplication.Server.Pages.ServerLogPage;
 import java.awt.Color;
 
 /**
- * Server'ı dinleyen elementler
+ * ServerWorker'ı dinleyen elementler: Server
  * @author rtanyildizi
  */
-public interface ServerListener  {
-    void onServerLog(String logMessage, Color color);
-    void onNewClient(ServerClientModel model);
+public interface ServerWorkerListener  {
+    void onClientDisconnect(String id, String username);
 }
-
-
-

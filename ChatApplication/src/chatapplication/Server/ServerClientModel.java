@@ -17,33 +17,44 @@ public class ServerClientModel {
     private DataInputStream dis;
     private String id;
     private String username;
-    private String address;
     private int port;
     private ServerWorker worker;
     
     /**
-     * Yeni bir ServerClientModel nesnesi oluşturur.
-     * Client'ı dinleyerek taleplerine yanıt verecek ServerWorker nesnesini 
+     * Yeni bir ServerClientModel nesnesi oluşturur.Client'ı dinleyerek taleplerine yanıt verecek ServerWorker nesnesini 
      * oluşturur ve dinleme işlemeni başlatır.
      * 
      * @param dis Client tarafından gönderilen mesajların dinleneceği DataInputStream nesnesi
      * @param id Client modelinin benzersiz anahtarı
      * @param username Client tarafından belirtilen kullanıcı adı
-     * @param address Client'ın bağlandığı local adres
      * @param port Client'ın bağlandığı port numarası
+     * @param onDisconnect Client disconnect yapınca çalışacak event
      * @throws IOException 
      * @author rtanyildizi
      */
-    public ServerClientModel(DataInputStream dis, String id, String username, String address, int port) throws IOException {
+    public ServerClientModel(DataInputStream dis, String id, String username, int port, ServerWorkerListener onDisconnect) throws IOException {
         this.dis = dis;
         this.id = id;
         this.username = username;
-        this.address = address;
         this.port = port;
         this.dis = dis;
         
         
-        worker = new ServerWorker(dis);
+        worker = new ServerWorker(this.dis, this.id, this.username);
+        worker.addServerWorkerListener(onDisconnect);
         worker.listen();
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public String getId() {
+        return id;
+    }
+
 }

@@ -45,7 +45,7 @@ public class ServerHomePage extends javax.swing.JFrame {
             String portStr = tfPort.getText().trim();
             if (Server.checkPort(portStr)) {
                 this.server = new Server(Integer.parseInt(portStr));
-                this.server.start();
+               
                 this.setVisible(false);
                 this.serverLogPage = new ServerLogPage(server);
                 this.serverLogPage.pack();
@@ -53,7 +53,7 @@ public class ServerHomePage extends javax.swing.JFrame {
                 this.serverLogPage.setVisible(true);
             }
         } catch (IOException | InvalidPortException e) {
-            JOptionPane.showMessageDialog(this, "Error occured while starting server.Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error occured while starting server. Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

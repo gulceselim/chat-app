@@ -5,11 +5,15 @@
  */
 package chatapplication.Server.Pages;
 
+import Utils.TimeUtils;
 import chatapplication.Server.Server;
+import chatapplication.Server.ServerClientModel;
+import chatapplication.Server.ServerListener;
 import java.awt.Color;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTextPane;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -34,30 +38,38 @@ public class ServerLogPage extends javax.swing.JFrame {
 
         this.server = server;
         // Server'a yeni bir ServerListener ekler. Yeni bir mesaj geldiğinde 
-        // parametre olarak verilen lambda fonksiyonu çalıştırılır.
-        
-        // TODO: Pek güzel bir yöntem değil. Daha iyisi bulunursa değiştirilecek.
-        this.tpServerLog = new JTextPane();
+        // parametre olarak verilen lambda fonksiyonunu çalıştırır. Bu fonksiyon
+        // Bu fonksiyon gelen mesajın başına zaman bilgisi ekleyerek tpServerLog
+        // içerisine renklendirilmiş şekilde ekler.
 
-        server.addServerListener((message) -> {
-            this.addColoredText(tpServerLog, message, Color.GREEN);
-        });
-        
         initComponents();
+        server.addServerListener(new ServerLogPage_ServerListener(this));
+        this.server.start();
     }
-    
-    private void addColoredText(JTextPane pane, String message, Color color) {
+
+    public void onServerLog(String logMessage, Color color) {
+        final String time = TimeUtils.getCurrentFormattedTime();
+        this.addColoredText(tpServerLog, time + " ▶ ", Color.BLACK);
+        this.addColoredText(tpServerLog, logMessage, color);
+    }
+
+    public void onNewClient(ServerClientModel scm) {
+        DefaultTableModel model = (DefaultTableModel) tblClientList.getModel();
+        model.addRow(new Object[]{scm.getId(), scm.getUsername(), scm.getPort()});
+    }
+
+    private void addColoredText(JTextPane pane, String text, Color color) {
         StyledDocument doc = pane.getStyledDocument();
-        
+
         Style style = pane.addStyle("Color Style", null);
         StyleConstants.setForeground(style, color);
         try {
-            doc.insertString(doc.getLength(), message, style);
+            doc.insertString(doc.getLength(), text, style);
         } catch (BadLocationException ex) {
             Logger.getLogger(ServerLogPage.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -71,14 +83,30 @@ public class ServerLogPage extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tpServerLog = new javax.swing.JTextPane();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblClientList = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setForeground(new java.awt.Color(204, 0, 0));
         jLabel1.setText("Server Log History");
 
+        tpServerLog.setFont(tpServerLog.getFont().deriveFont(tpServerLog.getFont().getSize()+2f));
         jScrollPane1.setViewportView(tpServerLog);
+
+        jLabel2.setForeground(new java.awt.Color(204, 0, 0));
+        jLabel2.setText("Connected Clients");
+
+        tblClientList.setModel(new javax.swing.table.DefaultTableModel(
+            new Object[][]{},
+            new String [] {
+                "Client Id", "Client username", "Port Number"
+            }
+        ));
+        jScrollPane2.setViewportView(tblClientList);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -87,24 +115,32 @@ public class ServerLogPage extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(476, 476, 476))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 670, Short.MAX_VALUE)
-                        .addContainerGap())))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 529, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(7, 7, 7)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                .addGap(25, 25, 25))
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 690, 330));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 950, 390));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -115,8 +151,11 @@ public class ServerLogPage extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable tblClientList;
     private javax.swing.JTextPane tpServerLog;
     // End of variables declaration//GEN-END:variables
 }
