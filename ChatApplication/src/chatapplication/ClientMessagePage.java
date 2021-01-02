@@ -12,21 +12,33 @@ import java.io.*;
  * @author rtanyildizi
  */
 public class ClientMessagePage extends JFrame {
-   MyClient myClient;
-
+    MyClient myClient;
+    
+    public ClientMessagePage(){
+           initComponents();
+    }
+   
     /**
      * Creates new form ClientMessagePage
+     * @param clientHost
+     * @param clientPort
+     * @param clientUsername
      * @throws IOException
      */
-    public ClientMessagePage() throws IOException{
-        myClient = new MyClient("localhost", 6666);
+    public ClientMessagePage(String clientHost, int clientPort, String clientUsername) throws IOException{
+        myClient = new MyClient(clientHost, clientPort, clientUsername);
+        myClient.connect();
         initComponents(); 
     }
     
-    void SendMessageToServer() {
-        final String message = tfMessage.getText();
-        this.myClient.sendMessageToServer(message);
-        System.out.println("Client sent");
+    void sendMessage(){
+        try {
+            final String message = tfMessage.getText();
+            this.myClient.sendMessage(message);
+            System.out.println("Client sent");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error occured while sending message to server.Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -81,15 +93,14 @@ public class ClientMessagePage extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tfMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfMessageActionPerformed
-        this.SendMessageToServer();
+        this.sendMessage();
     }//GEN-LAST:event_tfMessageActionPerformed
 
     private void btnSendMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendMessageActionPerformed
-        // TODO add your handling code here:
-        this.SendMessageToServer();
+        this.sendMessage();
     }//GEN-LAST:event_btnSendMessageActionPerformed
-
-
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSendMessage;
     private javax.swing.JTextField tfMessage;

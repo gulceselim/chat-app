@@ -16,7 +16,7 @@ public class ChatApplication {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        ClientHomePage clientHomePage = new ClientHomePage();
+        ClientLoginPage clientHomePage = new ClientLoginPage();
         clientHomePage.setVisible(true);
     }
     
