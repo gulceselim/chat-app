@@ -34,7 +34,6 @@ public class MyClient {
     }
     
     public void sendMessage(String message) throws IOException{
-        this.socket = new Socket(this.host, this.port);
         this.sendRequestToServer("/!m/%s/!e/".formatted(message));
     }
     

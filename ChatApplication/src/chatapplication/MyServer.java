@@ -63,7 +63,7 @@ public class MyServer extends Thread{
                         
                         if(username != null && !"".equals(username)){
                             final String id = UUID.randomUUID().toString();
-                            ServerClientModel scm = new ServerClientModel(s, id, username, s.getInetAddress().getHostAddress(), s.getPort());
+                            ServerClientModel scm = new ServerClientModel(dis, id, username, s.getInetAddress().getHostAddress(), s.getPort());
                             clientModels.add(scm);
                             System.out.println("✅ %s connected to the server from /%s:%d".formatted(username, s.getInetAddress().getHostAddress(), s.getPort()));
                         } else {
