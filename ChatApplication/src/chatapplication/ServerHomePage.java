@@ -20,7 +20,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class ServerHomePage extends javax.swing.JFrame {
     MyServer myServer;
-
+    ServerLogPage serverLogPage;
     /**
      * Creates new form ServerHomePage
      */
@@ -33,9 +33,13 @@ public class ServerHomePage extends javax.swing.JFrame {
         try {
             String portStr = tfPort.getText().trim();
             if(MyServer.checkPort(portStr)){
-                myServer = new MyServer(Integer.parseInt(portStr));
-                myServer.start();
-                pnlServerSettings.setVisible(false);   
+                serverLogPage = new ServerLogPage();
+                this.myServer = new MyServer(serverLogPage, Integer.parseInt(portStr));
+                this.myServer.start();
+                this.setVisible(false); 
+                this.serverLogPage.pack();
+                this.serverLogPage.setLocationRelativeTo(null);
+                this.serverLogPage.setVisible(true);
             }
         } catch (IOException | InvalidPortException e) {
             JOptionPane.showMessageDialog(this, "Error occured while starting server.Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

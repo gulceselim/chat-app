@@ -32,13 +32,9 @@ public class ClientMessagePage extends JFrame {
     }
     
     void sendMessage(){
-        try {
-            final String message = tfMessage.getText();
-            this.myClient.sendMessage(message);
-            System.out.println("Client sent");
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error occured while sending message to server.Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        final String message = tfMessage.getText();
+        this.myClient.sendMessage(message);
+        System.out.println("Client sent");
     }
 
     /**

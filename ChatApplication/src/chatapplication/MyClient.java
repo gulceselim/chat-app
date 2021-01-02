@@ -33,7 +33,7 @@ public class MyClient {
         }
     }
     
-    public void sendMessage(String message) throws IOException{
+    public void sendMessage(String message){
         this.sendRequestToServer("/!m/%s/!e/".formatted(message));
     }
     

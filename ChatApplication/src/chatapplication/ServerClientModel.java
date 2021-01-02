@@ -23,6 +23,7 @@ public class ServerClientModel {
     
     
     public ServerClientModel(DataInputStream dis, String id, String username, String address, int port) throws IOException {
+        this.dis = dis;
         this.id = id;
         this.username = username;
         this.address = address;
