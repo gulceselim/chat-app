@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatapplication;
+package chatapplication.Server.Pages;
 
-import chatapplication.Exceptions.InvalidPortException;
+import chatapplication.Server.Exceptions.InvalidPortException;
+import chatapplication.Server.Server;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,24 +20,34 @@ import javax.swing.UnsupportedLookAndFeelException;
  * @author rtanyildizi
  */
 public class ServerHomePage extends javax.swing.JFrame {
-    MyServer myServer;
+
+    Server server;
     ServerLogPage serverLogPage;
+
     /**
-     * Creates new form ServerHomePage
+     * Yeni bir ServerHomePage sayfası oluşturur.
+     * Bu sayfa üzerinden yeni bir Server nesnesi başlatılabilir.
      */
     public ServerHomePage() {
         initComponents();
-        
     }
-    
-    public void startServer(){
+
+    /**
+     * tfPort içerisindeki port değerini okur ve geçerli bir port değeri olup
+     * olmadığını kontrol eder. Eğer port geçerliyse bu port değeri ile bir Server 
+     * nesnesi oluşturur ve server'ı başlatır. Server başarıyla açılırsa bir 
+     * ServerLogPage nesnesi oluşturur. Eğer port geçersizse hata diyaloğu oluşturur.
+     * 
+     * @author rtanyildizi
+     */
+    public void startServer() {
         try {
             String portStr = tfPort.getText().trim();
-            if(MyServer.checkPort(portStr)){
-                serverLogPage = new ServerLogPage();
-                this.myServer = new MyServer(serverLogPage, Integer.parseInt(portStr));
-                this.myServer.start();
-                this.setVisible(false); 
+            if (Server.checkPort(portStr)) {
+                this.server = new Server(Integer.parseInt(portStr));
+                this.server.start();
+                this.setVisible(false);
+                this.serverLogPage = new ServerLogPage(server);
                 this.serverLogPage.pack();
                 this.serverLogPage.setLocationRelativeTo(null);
                 this.serverLogPage.setVisible(true);
@@ -45,6 +56,7 @@ public class ServerHomePage extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error occured while starting server.Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -123,40 +135,41 @@ public class ServerHomePage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
-        startServer();
+        this.startServer();
     }//GEN-LAST:event_btnStartActionPerformed
 
     private void tfPortActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfPortActionPerformed
-        // TODO add your handling code here:
+        this.startServer();
     }//GEN-LAST:event_tfPortActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-       
+
         //</editor-fold>
         try {
             // Use the system look and feel for the swing application
             String className = UIManager.getSystemLookAndFeelClassName();
             System.out.println("className = " + className);
             UIManager.setLookAndFeel(className);
-            
+
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
             Logger.getLogger(ServerHomePage.class.getName()).log(Level.SEVERE, null, ex);
         }
-         
+
         ServerHomePage serverHomePage = new ServerHomePage();
-        SwingUtilities.updateComponentTreeUI(serverHomePage);  
-        
+        SwingUtilities.updateComponentTreeUI(serverHomePage);
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
+            // Pencereyi ekranın merkezinde açar.
             serverHomePage.pack();
             serverHomePage.setLocationRelativeTo(null);
             serverHomePage.setVisible(true);
-         });
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

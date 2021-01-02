@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatapplication;
+package chatapplication.Server;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -18,10 +18,18 @@ import java.util.logging.Logger;
 class ServerWorker {
     DataInputStream dis;
     
+    /**
+     * @param dis Client tarafından gönderilen mesajların dinlenileceği DataInputStream nesnesi
+     * @author rtanyildizi
+     */
     public ServerWorker(DataInputStream dis){
         this.dis = dis;
     }
     
+    /**
+     * Belirtilen DataInputStream üzerinden Client'ın gönderdiği mesajları dinlemek için bir thread oluşturur.
+     * @author rtanyildizi
+     */
     public void listen(){
         new Thread(() -> {
                 try {

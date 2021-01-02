@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatapplication;
+package chatapplication.Client.Pages;
+
+import chatapplication.Client.Client;
 import javax.swing.*;
 import java.io.*;
 
@@ -12,28 +14,28 @@ import java.io.*;
  * @author rtanyildizi
  */
 public class ClientMessagePage extends JFrame {
-    MyClient myClient;
-    
-    public ClientMessagePage(){
-           initComponents();
+
+    Client client;
+
+    public ClientMessagePage() {
+        initComponents();
     }
-   
+
     /**
-     * Creates new form ClientMessagePage
-     * @param clientHost
-     * @param clientPort
-     * @param clientUsername
-     * @throws IOException
+     * Yeni bir ClientMessagePage sayfası oluşturur.
+     * @param client
      */
-    public ClientMessagePage(String clientHost, int clientPort, String clientUsername) throws IOException{
-        myClient = new MyClient(clientHost, clientPort, clientUsername);
-        myClient.connect();
-        initComponents(); 
+    public ClientMessagePage(Client client) {
+        this.client = client;
+        initComponents();
     }
-    
-    void sendMessage(){
+
+    /**
+     * tfMessage içerisindeki mesajı okur ve Client tarafından bağlanılan Server'a gönderir.
+     */
+    void sendMessage() {
         final String message = tfMessage.getText();
-        this.myClient.sendMessage(message);
+        this.client.sendMessage(message);
         System.out.println("Client sent");
     }
 
@@ -95,8 +97,8 @@ public class ClientMessagePage extends JFrame {
     private void btnSendMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendMessageActionPerformed
         this.sendMessage();
     }//GEN-LAST:event_btnSendMessageActionPerformed
-    
-    
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSendMessage;
     private javax.swing.JTextField tfMessage;

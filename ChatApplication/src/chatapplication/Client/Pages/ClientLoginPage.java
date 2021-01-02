@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatapplication;
+package chatapplication.Client.Pages;
 
+import chatapplication.Server.Pages.ServerHomePage;
+import chatapplication.Client.Client;
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,9 +20,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  * @author rtanyildizi
  */
 public class ClientLoginPage extends javax.swing.JFrame {
-    MyClient myClient;
-    int clientPort;
-    String clientUsername;
+    Client client;
     /**
      * Creates new form ClientHomePage
      */
@@ -28,12 +28,20 @@ public class ClientLoginPage extends javax.swing.JFrame {
         initComponents();
     }
     
-    private void ConnectServer() {
+    /**
+     * Yeni bir Client nesnesi oluşturur ve bu client ile Server'a bağlanır.
+     * Bağlanma işlemi başarılı olursa yeni bir ClientMessagePage sayfası oluşturur.
+     * Bağlanma işlemi başarısız olursa hata diyaloğu gösterir.
+     */
+    private void connectServer() {
          try {
-            clientPort = Integer.parseInt(tfClientPort.getText());
-            clientUsername = tfClientUsername.getText();
-            System.out.println(clientUsername);
-            ClientMessagePage clientMessagePage = new ClientMessagePage("localhost", clientPort, clientUsername);
+            int port = Integer.parseInt(tfClientPort.getText());
+            String username = tfClientUsername.getText();
+            this.client = new Client("localhost", port, username);
+            this.client.connect();
+            
+            ClientMessagePage clientMessagePage = new ClientMessagePage(client);
+            // clientMessagePage sayfasını ekranın merkezine yerleştirir.
             clientMessagePage.pack();
             clientMessagePage.setLocationRelativeTo(null);
             clientMessagePage.setVisible(true);
@@ -154,7 +162,7 @@ public class ClientLoginPage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnConnectServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectServerActionPerformed
-       this.ConnectServer();
+       this.connectServer();
     }//GEN-LAST:event_btnConnectServerActionPerformed
 
     /**
