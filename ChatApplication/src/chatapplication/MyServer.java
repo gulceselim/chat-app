@@ -55,6 +55,7 @@ public class MyServer extends Thread{
                   Socket s = serverSocket.accept();
                   DataInputStream dis = new DataInputStream(s.getInputStream());
                   String message = dis.readUTF();
+                  System.out.println(message);
                   
                   if(message.startsWith("/!c/") && message.endsWith("/!e/")) {
                       String commandTrimmed = message.split("/!c/")[1];

@@ -40,7 +40,7 @@ public class MyClient {
     
     public void connect() throws IOException{
         this.socket = new Socket(this.host, this.port);
-        this.sendRequestToServer("/!c/%s/!e/".formatted(this.username));
         this.dos = new DataOutputStream(socket.getOutputStream());
+        this.sendRequestToServer("/!c/%s/!e/".formatted(this.username));
     }
 }

@@ -80,6 +80,13 @@ public class ServerHomePage extends javax.swing.JFrame {
 
         jLabel3.setText("Port:");
         pnlServerSettings.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 69, -1, -1));
+
+        tfPort.setText("6666");
+        tfPort.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfPortActionPerformed(evt);
+            }
+        });
         pnlServerSettings.add(tfPort, new org.netbeans.lib.awtextra.AbsoluteConstraints(91, 66, 160, -1));
 
         jLabel5.setText("Server settings:");
@@ -114,6 +121,10 @@ public class ServerHomePage extends javax.swing.JFrame {
     private void btnStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartActionPerformed
         startServer();
     }//GEN-LAST:event_btnStartActionPerformed
+
+    private void tfPortActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfPortActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfPortActionPerformed
 
     /**
      * @param args the command line arguments

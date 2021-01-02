@@ -88,6 +88,10 @@ public class ClientLoginPage extends javax.swing.JFrame {
 
         tfClientHost.setText("localhost");
 
+        tfClientPort.setText("6666");
+
+        tfClientUsername.setText("test");
+
         jLabel4.setText("User profile:");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
