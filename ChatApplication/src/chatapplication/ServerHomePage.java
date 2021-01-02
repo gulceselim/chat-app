@@ -121,9 +121,7 @@ public class ServerHomePage extends javax.swing.JFrame {
     public static void main(String args[]) {
        
         //</editor-fold>
-       
-        
-         try {
+        try {
             // Use the system look and feel for the swing application
             String className = UIManager.getSystemLookAndFeelClassName();
             System.out.println("className = " + className);
