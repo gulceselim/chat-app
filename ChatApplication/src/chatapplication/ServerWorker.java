@@ -19,8 +19,8 @@ class ServerWorker {
     DataInputStream dis;
     Socket socket;
     
-    public ServerWorker(Socket socket){
-        this.socket = socket;
+    public ServerWorker(DataInputStream dis){
+        this.dis = dis;
     }
     
     public void listen(){
@@ -28,8 +28,8 @@ class ServerWorker {
                 try {
                     String message =  "";
                     while(true) {
-                        dis = new DataInputStream(this.socket.getInputStream());
                         message = dis.readUTF();
+                        System.out.println(message);
                     }
                 } catch (IOException ex) {
                         Logger.getLogger(ServerWorker.class.getName()).log(Level.SEVERE, null, ex);

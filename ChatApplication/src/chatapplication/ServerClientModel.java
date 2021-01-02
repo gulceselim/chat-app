@@ -5,6 +5,7 @@
  */
 package chatapplication;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -13,23 +14,23 @@ import java.net.Socket;
  * @author rtanyildizi
  */
 public class ServerClientModel {
-    private Socket socket;
     private String id;
     private String username;
     private String address;
     private int port;
     private ServerWorker worker;
+    private DataInputStream dis;
     
     
-    public ServerClientModel(Socket socket, String id, String username, String address, int port) throws IOException {
-        this.socket = socket;
+    public ServerClientModel(DataInputStream dis, String id, String username, String address, int port) throws IOException {
+        this.dis = dis;
         this.id = id;
         this.username = username;
         this.address = address;
         this.port = port;
         
         
-        worker = new ServerWorker(socket);
+        worker = new ServerWorker(dis);
         worker.listen();
     }
 }

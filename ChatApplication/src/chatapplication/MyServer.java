@@ -3,6 +3,8 @@ package chatapplication;
 import chatapplication.Exceptions.InvalidPortException;
 import java.io.*;
 import java.net.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,15 +14,21 @@ import java.util.logging.Logger;
 
 public class MyServer extends Thread{
     int port;
+    String connectMsg, serverMsg, errorMsg;
     ServerSocket serverSocket;
     List<ServerClientModel> clientModels = Collections.synchronizedList(new ArrayList<>());
+    ServerLogPage serverLogPage;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    LocalDateTime now;
+    
     
     public MyServer() {
         
     }
     
-    public MyServer(int port) throws IOException{
+    public MyServer(ServerLogPage serverLogPage, int port) throws IOException{
         this.port = port;
+        this.serverLogPage = serverLogPage;
         this.serverSocket = new ServerSocket(this.port);
     }
 
@@ -44,7 +52,9 @@ public class MyServer extends Thread{
 
     @Override
     public void  run() {
-        System.out.println("✅ Server has started successfully at http://%s:%d".formatted("localhost", this.port));
+        now = LocalDateTime.now();
+        this.serverMsg = "✅ Server has started successfully at http://%s:%d".formatted("localhost", this.port) + "\t\t\t%s".formatted(now.format(formatter));
+        this.serverLogPage.tAreaLog.append(serverMsg + "\n");
         receive(this.serverSocket);
     }
     
@@ -62,12 +72,15 @@ public class MyServer extends Thread{
                         final String username = commandTrimmed.substring(0, commandTrimmed.length() - 4);
                         
                         if(username != null && !"".equals(username)){
+                            now = LocalDateTime.now();
                             final String id = UUID.randomUUID().toString();
-                            ServerClientModel scm = new ServerClientModel(s, id, username, s.getInetAddress().getHostAddress(), s.getPort());
-                            clientModels.add(scm);
-                            System.out.println("✅ %s connected to the server from /%s:%d".formatted(username, s.getInetAddress().getHostAddress(), s.getPort()));
+                            ServerClientModel scm = new ServerClientModel(dis, id, username, s.getInetAddress().getHostAddress(), s.getPort());
+                            this.clientModels.add(scm);
+                            this.connectMsg = "✅ %s connected to the server from /%s:%d".formatted(username, s.getInetAddress().getHostAddress(), s.getPort())  + "\t\t\t\t%s".formatted(now.format(formatter));
+                            this.serverLogPage.tAreaLog.append(connectMsg + "\n");
                         } else {
-                            System.out.println("❗ There is a connection request from %s:%d with an invalid username".formatted(s.getInetAddress().getHostAddress(), s.getPort()));
+                            this.errorMsg = "❗ There is a connection request from %s:%d with an invalid username".formatted(s.getInetAddress().getHostAddress(), s.getPort());
+                            this.serverLogPage.tAreaLog.append(errorMsg + "\n");
                         }
                   }
               } catch (IOException ex) {
