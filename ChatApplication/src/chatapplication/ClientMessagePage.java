@@ -26,6 +26,7 @@ public class ClientMessagePage extends JFrame {
     void SendMessageToServer() {
         final String message = tfMessage.getText();
         this.myClient.sendMessageToServer(message);
+        System.out.println("Client sent");
     }
 
     /**

@@ -7,7 +7,12 @@ package chatapplication;
 
 import chatapplication.Exceptions.InvalidPortException;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -21,7 +26,7 @@ public class ServerHomePage extends javax.swing.JFrame {
      */
     public ServerHomePage() {
         initComponents();
-        this.tfHost.setEditable(false);
+        
     }
     
     public void startServer(){
@@ -30,8 +35,7 @@ public class ServerHomePage extends javax.swing.JFrame {
             if(MyServer.checkPort(portStr)){
                 myServer = new MyServer(Integer.parseInt(portStr));
                 myServer.start();
-                pnlServerSettings.setVisible(false);
-                pnlServerLog.setVisible(true);
+                pnlServerSettings.setVisible(false);   
             }
         } catch (IOException | InvalidPortException e) {
             JOptionPane.showMessageDialog(this, "Error occured while starting server.Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -46,44 +50,40 @@ public class ServerHomePage extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pnlMain = new javax.swing.JPanel();
         pnlServerSettings = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         tfHost = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         tfPort = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        lblUrl = new javax.swing.JLabel();
         btnStart = new javax.swing.JButton();
-        pnlServerLog = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jLabel6 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        pnlMain.setPreferredSize(new java.awt.Dimension(400, 150));
-        pnlMain.setLayout(new java.awt.CardLayout());
+        setResizable(false);
+        setType(java.awt.Window.Type.POPUP);
 
         pnlServerSettings.setPreferredSize(new java.awt.Dimension(400, 150));
+        pnlServerSettings.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        jLabel1.setForeground(new java.awt.Color(204, 0, 0));
         jLabel1.setText("Start ChatApplication's server");
+        pnlServerSettings.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, -1, -1));
 
         tfHost.setText("localhost");
         tfHost.setToolTipText("");
+        pnlServerSettings.add(tfHost, new org.netbeans.lib.awtextra.AbsoluteConstraints(91, 40, 160, -1));
+        this.tfHost.setEditable(false);
 
         jLabel2.setText("Host:");
+        pnlServerSettings.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 43, -1, -1));
 
         jLabel3.setText("Port:");
-
-        jLabel4.setText("Url:");
+        pnlServerSettings.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 69, -1, -1));
+        pnlServerSettings.add(tfPort, new org.netbeans.lib.awtextra.AbsoluteConstraints(91, 66, 160, -1));
 
         jLabel5.setText("Server settings:");
-
-        lblUrl.setText("...");
+        pnlServerSettings.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, -1, -1));
 
         btnStart.setText("Start Server");
         btnStart.addActionListener(new java.awt.event.ActionListener() {
@@ -91,110 +91,21 @@ public class ServerHomePage extends javax.swing.JFrame {
                 btnStartActionPerformed(evt);
             }
         });
-
-        javax.swing.GroupLayout pnlServerSettingsLayout = new javax.swing.GroupLayout(pnlServerSettings);
-        pnlServerSettings.setLayout(pnlServerSettingsLayout);
-        pnlServerSettingsLayout.setHorizontalGroup(
-            pnlServerSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlServerSettingsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlServerSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlServerSettingsLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnStart))
-                    .addGroup(pnlServerSettingsLayout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(tfHost, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel5)
-                    .addGroup(pnlServerSettingsLayout.createSequentialGroup()
-                        .addGroup(pnlServerSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
-                        .addGap(27, 99, Short.MAX_VALUE)
-                        .addGroup(pnlServerSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tfPort, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblUrl))))
-                .addContainerGap())
-        );
-        pnlServerSettingsLayout.setVerticalGroup(
-            pnlServerSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlServerSettingsLayout.createSequentialGroup()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlServerSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tfHost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlServerSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(tfPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlServerSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(lblUrl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnStart)
-                .addContainerGap())
-        );
-
-        pnlMain.add(pnlServerSettings, "card3");
-
-        pnlServerLog.setPreferredSize(new java.awt.Dimension(400, 150));
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
-
-        jLabel6.setText("jLabel6");
-
-        jButton1.setText("jButton1");
-
-        javax.swing.GroupLayout pnlServerLogLayout = new javax.swing.GroupLayout(pnlServerLog);
-        pnlServerLog.setLayout(pnlServerLogLayout);
-        pnlServerLogLayout.setHorizontalGroup(
-            pnlServerLogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlServerLogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlServerLogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
-                    .addGroup(pnlServerLogLayout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
-                .addContainerGap())
-        );
-        pnlServerLogLayout.setVerticalGroup(
-            pnlServerLogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlServerLogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnlServerLogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(jButton1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))
-        );
-
-        pnlMain.add(pnlServerLog, "card2");
+        pnlServerSettings.add(btnStart, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 92, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(10, 10, 10)
+                .addComponent(pnlServerSettings, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(pnlServerSettings, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -208,51 +119,39 @@ public class ServerHomePage extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ServerHomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ServerHomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ServerHomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ServerHomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
+       
         //</editor-fold>
-
+       
+        
+         try {
+            // Use the system look and feel for the swing application
+            String className = UIManager.getSystemLookAndFeelClassName();
+            System.out.println("className = " + className);
+            UIManager.setLookAndFeel(className);
+            
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(ServerHomePage.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         
+        ServerHomePage serverHomePage = new ServerHomePage();
+        SwingUtilities.updateComponentTreeUI(serverHomePage);  
+        
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ServerHomePage().setVisible(true);
-            }
-        });
+        java.awt.EventQueue.invokeLater(() -> {
+            serverHomePage.pack();
+            serverHomePage.setLocationRelativeTo(null);
+            serverHomePage.setVisible(true);
+         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnStart;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JLabel lblUrl;
-    private javax.swing.JPanel pnlMain;
-    private javax.swing.JPanel pnlServerLog;
     private javax.swing.JPanel pnlServerSettings;
     private javax.swing.JTextField tfHost;
     private javax.swing.JTextField tfPort;

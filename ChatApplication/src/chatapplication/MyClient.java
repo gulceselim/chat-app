@@ -5,6 +5,7 @@ import java.net.*;
 
 public class MyClient {
     Socket socket;
+    DataOutputStream dos;
 
     public void setSocket(Socket socket) {
         this.socket = socket;
@@ -15,15 +16,15 @@ public class MyClient {
     }
     
     public MyClient(String host, int port) throws IOException{
-        socket = new Socket(host, port); 
+        socket = new Socket(host, port);
+        this.dos = new DataOutputStream(socket.getOutputStream());
     }
     
     public void sendMessageToServer(String message){
         try {
-            DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
-            dout.writeUTF(message.trim());
-            dout.flush();
-        } catch (Exception e) {
+            this.dos.writeUTF(message.trim());
+            this.dos.flush();
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
         
