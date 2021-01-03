@@ -7,6 +7,7 @@ package chatapplication.Client;
 
 import chatapplication.Server.Packet;
 import chatapplication.Server.ServerClientModel;
+import chatapplication.Server.ServerClientSerializable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.List;
@@ -50,8 +51,14 @@ public class ClientWorker {
     private void packetProcessor(Packet packet) {
         if(packet.getObjName().equals("clientId")) {
             this.clientWorkerEventHandler.emitClientIdSent((String)packet.getObj());
-        }else if(packet.getObjName().equals("clientList")){
-            this.clientWorkerEventHandler.emitClientList((ServerClientModel) packet.getObj());
+        } else if(packet.getObjName().equals("clientList")){
+            
+            var array = (ServerClientSerializable[]) packet.getObj();
+            
+            for(int i = 0; i < array.length; ++i) {
+                System.out.println(array[i].getId());
+            } 
+            /*this.clientWorkerEventHandler.emitClientList((List<ServerClientModel>) packet.getObj()); */ 
         }
     }
     

@@ -7,14 +7,18 @@ package chatapplication.Server;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.UUID;
-
+import java.io.ObjectOutputStream;
 /**
  *
  * @author rtanyildizi
  */
 public class ServerClientModel {
     private DataInputStream dis;
+    private ObjectOutputStream oos;
+
+    public ObjectOutputStream getOos() {
+        return oos;
+    }
     private String id;
     private String username;
     private int port;
@@ -31,17 +35,23 @@ public class ServerClientModel {
      * @throws IOException 
      * @author rtanyildizi
      */
-    public ServerClientModel(DataInputStream dis,String id, String username, int port, ServerWorkerListener listener) throws IOException {
+    public ServerClientModel(DataInputStream dis, ObjectOutputStream oos, String id, String username, int port, ServerWorkerListener listener) throws IOException {
         this.dis = dis;
         this.username = username;
         this.port = port;
         this.dis = dis;
+        this.oos = oos;
         
         this.id = id;
         
         worker = new ServerWorker(this.dis, this.id, this.username);
         worker.getEventHandler().addServerWorkerListener(listener);
         worker.listen();
+    }
+    
+    
+    public ServerClientSerializable toSerializable() {
+        return new ServerClientSerializable(this.id, this.username, this.port);
     }
 
     public void setUsername(String username) {

@@ -14,5 +14,5 @@ import java.util.List;
  */
 public interface ClientWorkerListener {
     void onClientIdSent(String id);
-    void onClientList(ServerClientModel clientList);
+    void onClientList(List<ServerClientModel> clientList);
 }

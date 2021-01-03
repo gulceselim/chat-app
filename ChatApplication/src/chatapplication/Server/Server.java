@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 public class Server extends Thread {
 
     int port;
-    ObjectOutputStream oos;
     ServerSocket serverSocket;
     DateTimeFormatter formatter;
     ServerEventHandler eventHandler;
@@ -86,12 +85,21 @@ public class Server extends Thread {
         });
     }
     
-    private void sendClientIdBack(String id) throws IOException {
-        this.oos.writeObject(new Packet(id, "clientId"));
+    private void sendClientIdBack(ObjectOutputStream oos, String id) throws IOException {
+        oos.writeObject(new Packet(id, "clientId"));
     }
     
-    private void sendClientList(ServerClientModel clientList) throws IOException {
-        this.oos.writeObject(new Packet(clientList, "clientList"));
+    private void sendClientList() throws IOException {
+        ServerClientSerializable[] array = ServerClientSerializable.fromServerClientModelList(clientModels);
+        
+        clientModels.forEach((client) -> {
+            try {
+                client.getOos().writeObject(new Packet(array, "clientList"));
+            } catch (IOException ex) {
+                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        });
     }
    
     /**
@@ -107,7 +115,7 @@ public class Server extends Thread {
                 try {
                     Socket s = this.serverSocket.accept();
                     DataInputStream dis = new DataInputStream(s.getInputStream());
-                    this.oos = new ObjectOutputStream(s.getOutputStream());
+                    ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
 
                     String message = dis.readUTF();
 
@@ -118,12 +126,12 @@ public class Server extends Thread {
                         if (username != null && !"".equals(username)) {
                             final String id = UUID.randomUUID().toString();
                             
-                            ServerClientModel scm = new ServerClientModel(dis, id, username, s.getPort(), new Server_ServerWorkerListener(this));
+                            ServerClientModel scm = new ServerClientModel(dis, oos, id, username, s.getPort(), new Server_ServerWorkerListener(this));
                             this.clientModels.add(scm);
-                            this.sendClientIdBack(id);
+                            this.sendClientIdBack(oos, id);
 
                             String connectMsg = "❤ %s connected to the server from /%s:%d".formatted(username, s.getInetAddress().getHostAddress(), s.getPort());
-                            this.sendClientList(scm);
+                            this.sendClientList();
                             
                             this.eventHandler.emitNewUserList(this.clientModels);
                             this.eventHandler.emitServerLog(connectMsg, new Color(0, 120, 0));

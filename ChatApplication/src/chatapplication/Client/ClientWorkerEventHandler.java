@@ -30,7 +30,7 @@ public class ClientWorkerEventHandler {
         });
     }
     
-    public void emitClientList(ServerClientModel clientList){
+    public void emitClientList(List<ServerClientModel> clientList){
         clientWorkerListener.forEach((listener) -> {
             listener.onClientList(clientList);
         });

@@ -25,8 +25,8 @@ public class Client_ClientWorkerListener implements ClientWorkerListener{
     }
 
     @Override
-    public void onClientList(ServerClientModel clientList) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void onClientList(List<ServerClientModel> clientList) {
+        return;
     }
 
 }

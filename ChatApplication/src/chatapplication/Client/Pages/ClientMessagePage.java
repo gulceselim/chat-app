@@ -71,11 +71,10 @@ public class ClientMessagePage extends JFrame {
         }
     }
     
-    public void onClientList(ServerClientModel newUserList){
-        clientList.add(newUserList);
+    public void onClientList(List<ServerClientModel> newUserList){
         DefaultListModel<String> model = (DefaultListModel<String>) lsUsers.getModel();
         model.setSize(0);
-        clientList.forEach((clientModel) -> {
+        newUserList.forEach((clientModel) -> {
             model.addElement(clientModel.getUsername());
         });
         lsUsers.setModel(model);

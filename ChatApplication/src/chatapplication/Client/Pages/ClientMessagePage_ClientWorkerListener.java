@@ -22,11 +22,11 @@ public class ClientMessagePage_ClientWorkerListener implements ClientWorkerListe
     
     @Override
     public void onClientIdSent(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return;
     }
 
     @Override
-    public void onClientList(ServerClientModel clientList) {
+    public void onClientList(List<ServerClientModel> clientList) {
         this.clientMessagePage.onClientList(clientList);
     }
 }
