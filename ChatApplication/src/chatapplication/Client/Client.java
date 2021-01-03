@@ -9,11 +9,12 @@ import java.net.*;
  * @author rtanyildizi
  */
 public class Client {
-    Socket socket;
+    ClientWorker worker;
     DataOutputStream dos;
-    ObjectOutputStream oos;
+    Socket socket;
     String username;
     String host;
+    String id;
     int port;
     
     /**
@@ -27,7 +28,15 @@ public class Client {
         this.username = username;
         this.host = host;
         this.port = port;
+        
     }
+    
+    
+    private void onClientIdSent(String id) {
+        this.id = id;
+    }
+    
+    
     
     /**
      * Bağlanılan Server nesnesine bir talep gönderir.
@@ -42,15 +51,7 @@ public class Client {
             System.out.println(e.getMessage());
         }
     }
-    
-    private void sendObjectToServer(Object obj){
-        try {
-            this.oos.writeObject(obj);
-            this.oos.flush();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
+
     
     /**
      * Bağlı olan diğer Client'lara iletilmesi için Server'a
@@ -68,6 +69,7 @@ public class Client {
     public void disconnect() throws IOException  {
         final String disconnectMsg = "/!d//!e/";
         this.sendDataToServer(disconnectMsg);
+        this.worker.setRunning(false);
         this.dos.close();
         this.socket.close();
     }
@@ -81,14 +83,21 @@ public class Client {
     public void connect() throws IOException{
         this.socket = new Socket(this.host, this.port);
         this.dos = new DataOutputStream(socket.getOutputStream());
+        
+        
+        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+        this.worker = new ClientWorker(ois);
+        this.worker.listen();
+        
+        
         this.sendDataToServer("/!c/%s/!e/".formatted(this.username));
     }
-    
-    public void connectListenerToServer(ServerListener serverListener){
-        this.sendObjectToServer(serverListener);
-    }
-    
+
     public void changeUsername(String newUsername){
         this.sendDataToServer("/!rn/%s/!e/".formatted(newUsername));
+    }
+    
+    public void getAllUsers(){
+        this.sendDataToServer("/!all//!e/");
     }
 }

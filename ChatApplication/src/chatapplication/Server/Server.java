@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +19,7 @@ import java.util.logging.Logger;
 public class Server extends Thread {
 
     int port;
+    ObjectOutputStream oos;
     ServerSocket serverSocket;
     DateTimeFormatter formatter;
     ServerEventHandler eventHandler;
@@ -84,6 +86,10 @@ public class Server extends Thread {
         });
     }
     
+    private void sendClientIdBack(String id) throws IOException {
+        this.oos.writeObject(new Packet(id, "clientId"));
+    }
+    
     
    
     /**
@@ -99,6 +105,8 @@ public class Server extends Thread {
                 try {
                     Socket s = this.serverSocket.accept();
                     DataInputStream dis = new DataInputStream(s.getInputStream());
+                    this.oos = new ObjectOutputStream(s.getOutputStream());
+
                     String message = dis.readUTF();
 
                     if (message.startsWith("/!c/") && message.endsWith("/!e/")) {
@@ -106,9 +114,11 @@ public class Server extends Thread {
                         final String username = commandTrimmed.substring(0, commandTrimmed.length() - 4);
 
                         if (username != null && !"".equals(username)) {
+                            final String id = UUID.randomUUID().toString();
                             
-                            ServerClientModel scm = new ServerClientModel(dis, username, s.getPort(), new Server_ServerWorkerListener(this));
+                            ServerClientModel scm = new ServerClientModel(dis, id, username, s.getPort(), new Server_ServerWorkerListener(this));
                             this.clientModels.add(scm);
+                            this.sendClientIdBack(id);
 
                             String connectMsg = "❤ %s connected to the server from /%s:%d".formatted(username, s.getInetAddress().getHostAddress(), s.getPort());
                             

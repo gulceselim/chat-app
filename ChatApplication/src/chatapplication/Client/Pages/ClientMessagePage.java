@@ -33,6 +33,7 @@ public class ClientMessagePage extends JFrame {
      */
     public ClientMessagePage(Client client) {
         this.client = client;
+        this.client.getAllUsers();
         initComponents();
     }
 

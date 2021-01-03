@@ -15,49 +15,53 @@ import java.util.logging.Logger;
  * @author rtanyildizi
  */
 public class ServerWorker {
+
     DataInputStream dis;
     String clientId;
     String clientUsername;
     ServerWorkerEventHandler eventHandler;
     boolean running;
-    
+
     public void setClientUsername(String clientUsername) {
         this.clientUsername = clientUsername;
     }
-    
+
     public ServerWorkerEventHandler getEventHandler() {
         return eventHandler;
     }
-    
+
     /**
-     * @param dis Client tarafından gönderilen mesajların dinlenileceği DataInputStream nesnesi
+     * @param dis Client tarafından gönderilen mesajların dinlenileceği
+     * DataInputStream nesnesi
      * @author rtanyildizi
      */
-    public ServerWorker(DataInputStream dis, String clientId, String clientUsername){
+    public ServerWorker(DataInputStream dis, String clientId, String clientUsername) {
         this.dis = dis;
         this.clientId = clientId;
         this.clientUsername = clientUsername;
         this.running = true;
         this.eventHandler = new ServerWorkerEventHandler();
     }
-    
+
     /**
-     * Belirtilen DataInputStream üzerinden Client'ın gönderdiği mesajları dinlemek için bir thread oluşturur.
+     * Belirtilen DataInputStream üzerinden Client'ın gönderdiği mesajları
+     * dinlemek için bir thread oluşturur.
+     *
      * @author rtanyildizi
      */
-    public void listen(){
+    public void listen() {
         new Thread(() -> {
-                try {
-                    String message =  "";
-                    while(this.running) {
-                        message = dis.readUTF();
-                        this.messageProcessor(message);
-                    }
-                } catch (IOException ex) {
-                        Logger.getLogger(ServerWorker.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                String message = "";
+                while (this.running) {
+                    message = dis.readUTF();
+                    this.messageProcessor(message);
                 }
-        }, "listen").start(); 
-        
+            } catch (IOException ex) {
+                Logger.getLogger(ServerWorker.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }, "listen").start();
+
     }
 
     /**
@@ -67,17 +71,17 @@ public class ServerWorker {
         this.running = false;
         this.eventHandler.emitClientDisconnect(this.clientId, this.clientUsername);
     }
-    
+
     private void messageProcessor(String message) {
-        if(message.startsWith("/!d/") && message.endsWith("/!e/")) {
+        if (message.startsWith("/!d/") && message.endsWith("/!e/")) {
             this.stopWorker();
-        } else if(message.startsWith("/!m/") && message.endsWith("/!e/")){
+        } else if (message.startsWith("/!m/") && message.endsWith("/!e/")) {
             this.eventHandler.emitClientSendMessage(this.clientUsername);
             final String messageContent = message.substring(4, message.length() - 4);
             System.out.println(messageContent);
-        } else if(message.startsWith("/!rn/") && message.endsWith("/!e/")){
+        } else if (message.startsWith("/!rn/") && message.endsWith("/!e/")) {
             String username = message.substring(5, message.length() - 4);
-            if(username != null && !"".equals(username)){
+            if (username != null && !"".equals(username)) {
                 this.eventHandler.emitClientChangeUsername(this.clientId, username);
             }
         }

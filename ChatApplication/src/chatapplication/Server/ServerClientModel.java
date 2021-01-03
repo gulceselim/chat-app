@@ -31,13 +31,13 @@ public class ServerClientModel {
      * @throws IOException 
      * @author rtanyildizi
      */
-    public ServerClientModel(DataInputStream dis, String username, int port, ServerWorkerListener listener) throws IOException {
+    public ServerClientModel(DataInputStream dis,String id, String username, int port, ServerWorkerListener listener) throws IOException {
         this.dis = dis;
         this.username = username;
         this.port = port;
         this.dis = dis;
         
-        this.id = UUID.randomUUID().toString();
+        this.id = id;
         
         worker = new ServerWorker(this.dis, this.id, this.username);
         worker.getEventHandler().addServerWorkerListener(listener);
