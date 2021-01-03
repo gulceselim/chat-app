@@ -21,7 +21,6 @@ public class TimeUtils {
     public static String getCurrentFormattedTime() {
         LocalDateTime time = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        System.out.println(formatter == null);
         String formattedTime = time.format(formatter);
         return formattedTime;
     }

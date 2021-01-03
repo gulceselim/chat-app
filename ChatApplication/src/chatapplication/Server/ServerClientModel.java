@@ -5,8 +5,6 @@
  */
 package chatapplication.Server;
 
-import chatApplication.ServerWorker.ServerWorker;
-import chatApplication.ServerWorker.ServerWorkerListener;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.UUID;
@@ -29,11 +27,11 @@ public class ServerClientModel {
      * @param dis Client tarafından gönderilen mesajların dinleneceği DataInputStream nesnesi
      * @param username Client tarafından belirtilen kullanıcı adı
      * @param port Client'ın bağlandığı port numarası
-     * @param onDisconnect Client disconnect yapınca çalışacak event
+     * @param listener Client disconnect yapınca çalışacak event
      * @throws IOException 
      * @author rtanyildizi
      */
-    public ServerClientModel(DataInputStream dis, String username, int port, ServerWorkerListener onDisconnect) throws IOException {
+    public ServerClientModel(DataInputStream dis, String username, int port, ServerWorkerListener listener) throws IOException {
         this.dis = dis;
         this.username = username;
         this.port = port;
@@ -42,8 +40,13 @@ public class ServerClientModel {
         this.id = UUID.randomUUID().toString();
         
         worker = new ServerWorker(this.dis, this.id, this.username);
-        worker.getEventHandler().addServerWorkerListener(onDisconnect);
+        worker.getEventHandler().addServerWorkerListener(listener);
         worker.listen();
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+        this.worker.setClientUsername(username);
     }
 
     public String getUsername() {

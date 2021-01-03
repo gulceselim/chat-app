@@ -3,12 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatApplication.ServerWorker;
+package chatapplication.Server;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +20,10 @@ public class ServerWorker {
     String clientUsername;
     ServerWorkerEventHandler eventHandler;
     boolean running;
+    
+    public void setClientUsername(String clientUsername) {
+        this.clientUsername = clientUsername;
+    }
     
     public ServerWorkerEventHandler getEventHandler() {
         return eventHandler;
@@ -58,8 +60,6 @@ public class ServerWorker {
         
     }
 
-  
-    
     /**
      * ServerWorker nesnesinin çalışmasını durdurur.
      */
@@ -72,8 +72,14 @@ public class ServerWorker {
         if(message.startsWith("/!d/") && message.endsWith("/!e/")) {
             this.stopWorker();
         } else if(message.startsWith("/!m/") && message.endsWith("/!e/")){
+            this.eventHandler.emitClientSendMessage(this.clientUsername);
             final String messageContent = message.substring(4, message.length() - 4);
             System.out.println(messageContent);
+        } else if(message.startsWith("/!rn/") && message.endsWith("/!e/")){
+            String username = message.substring(5, message.length() - 4);
+            if(username != null && !"".equals(username)){
+                this.eventHandler.emitClientChangeUsername(this.clientId, username);
+            }
         }
     }
 }

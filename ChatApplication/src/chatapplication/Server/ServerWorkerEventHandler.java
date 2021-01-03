@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatApplication.ServerWorker;
+package chatapplication.Server;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +26,18 @@ public class ServerWorkerEventHandler {
     public void emitClientDisconnect(String clientId, String clientUsername) {
         this.serverWorkerListeners.forEach((listener) -> {
             listener.onClientDisconnect(clientId, clientUsername);
+        });
+    }
+    
+    public void emitClientSendMessage(String username){
+        this.serverWorkerListeners.forEach((listener) -> {
+            listener.onClientSendMessage(username);
+        });
+    }
+    
+    public void emitClientChangeUsername(String id, String newUsername){
+        this.serverWorkerListeners.forEach((listener) -> {
+            listener.onClientChangeUsername(id,newUsername);
         });
     }
     

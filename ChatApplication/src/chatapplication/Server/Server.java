@@ -63,9 +63,28 @@ public class Server extends Thread {
     public void onClientDisconnect(String clientId, String clientUsername) {
         this.clientModels.removeIf((model) -> (model.getId().equals(clientId)));
         String dscMsg = "💔 Client %s disconnected from the server".formatted(clientUsername);
-        this.eventHandler.emitServerLog(dscMsg, new Color(180, 0, 0));    
+        this.eventHandler.emitServerLog(dscMsg, new Color(180, 0, 0));
+        this.eventHandler.emitNewUserList(this.clientModels);
     }
-
+    
+    public void onClientSendMessage(String username){
+        String msg = "📨 Client %s sent message".formatted(username);
+        this.eventHandler.emitServerLog(msg, new Color(180, 30, 110));
+    }
+    
+    public void onClientChangeUsername(String id, String newUsername){
+        this.clientModels.forEach((model) -> {
+            if(model.getId().equals(id)){
+                final String oldUsername = model.getUsername();
+                model.setUsername(newUsername);
+                final String msg = "📣 Client %s changed his/her username to %s".formatted(oldUsername,newUsername);
+                this.eventHandler.emitServerLog(msg, new Color(120, 30, 180));
+                this.eventHandler.emitNewUserList(clientModels);
+            }
+        });
+    }
+    
+    
    
     /**
      * Client'lar tarafından ServerSocket'a yapılan bağlantı taleplerini kabul
@@ -93,7 +112,7 @@ public class Server extends Thread {
 
                             String connectMsg = "❤ %s connected to the server from /%s:%d".formatted(username, s.getInetAddress().getHostAddress(), s.getPort());
                             
-                            this.eventHandler.emitNewClient(scm);
+                            this.eventHandler.emitNewUserList(this.clientModels);
                             this.eventHandler.emitServerLog(connectMsg, new Color(0, 120, 0));
 
                         } else {

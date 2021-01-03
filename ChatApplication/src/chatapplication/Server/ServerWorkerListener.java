@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatApplication.ServerWorker;
+package chatapplication.Server;
 
 /**
  * ServerWorker'ı dinleyen elementler: Server
@@ -11,4 +11,6 @@ package chatApplication.ServerWorker;
  */
 public interface ServerWorkerListener  {
     void onClientDisconnect(String id, String username);
+    void onClientSendMessage(String username);
+    void onClientChangeUsername(String id, String newUsername);
 }

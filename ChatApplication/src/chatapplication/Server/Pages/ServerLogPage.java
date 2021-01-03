@@ -10,6 +10,7 @@ import chatapplication.Server.Server;
 import chatapplication.Server.ServerClientModel;
 import chatapplication.Server.ServerListener;
 import java.awt.Color;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTextPane;
@@ -23,7 +24,7 @@ import javax.swing.text.StyledDocument;
  *
  * @author Selim
  */
-public class ServerLogPage extends javax.swing.JFrame {
+public class ServerLogPage extends javax.swing.JFrame{
 
     Server server;
 
@@ -35,13 +36,7 @@ public class ServerLogPage extends javax.swing.JFrame {
      * @author rtanyildizi
      */
     public ServerLogPage(Server server) {
-
         this.server = server;
-        // Server'a yeni bir ServerListener ekler. Yeni bir mesaj geldiğinde 
-        // parametre olarak verilen lambda fonksiyonunu çalıştırır. Bu fonksiyon
-        // Bu fonksiyon gelen mesajın başına zaman bilgisi ekleyerek tpServerLog
-        // içerisine renklendirilmiş şekilde ekler.
-
         initComponents();
         server.getEventHandler().addServerListener(new ServerLogPage_ServerListener(this));
         this.server.start();
@@ -53,11 +48,16 @@ public class ServerLogPage extends javax.swing.JFrame {
         this.addColoredText(tpServerLog, logMessage, color);
     }
 
-    public void onNewClient(ServerClientModel scm) {
+    
+    public void onNewUserList(List<ServerClientModel> clientModels){
         DefaultTableModel model = (DefaultTableModel) tblClientList.getModel();
-        model.addRow(new Object[]{scm.getId(), scm.getUsername(), scm.getPort()});
+        model.setRowCount(0);
+        model.fireTableDataChanged();
+        clientModels.forEach((client) -> {
+            model.addRow(new Object[]{client.getId(), client.getUsername(), client.getPort()});
+        });
+        tblClientList.setModel(model);
     }
-
     
     private void addColoredText(JTextPane pane, String text, Color color) {
         StyledDocument doc = pane.getStyledDocument();
@@ -97,6 +97,7 @@ public class ServerLogPage extends javax.swing.JFrame {
 
         tpServerLog.setFont(tpServerLog.getFont().deriveFont(tpServerLog.getFont().getSize()+2f));
         jScrollPane1.setViewportView(tpServerLog);
+        tpServerLog.setEditable(false);
 
         jLabel2.setForeground(new java.awt.Color(204, 0, 0));
         jLabel2.setText("Connected Clients");

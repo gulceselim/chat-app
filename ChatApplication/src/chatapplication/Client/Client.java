@@ -1,5 +1,6 @@
 package chatapplication.Client;
 
+import chatapplication.Server.ServerListener;
 import java.io.*;
 import java.net.*;
 
@@ -10,6 +11,7 @@ import java.net.*;
 public class Client {
     Socket socket;
     DataOutputStream dos;
+    ObjectOutputStream oos;
     String username;
     String host;
     int port;
@@ -32,10 +34,19 @@ public class Client {
      * @param message Gönderilecek talebin içerdiği mesaj.
      * @author rtanyildizi
      */
-    private void sendRequestToServer(String message){
+    private void sendDataToServer(String message){
         try {
             this.dos.writeUTF(message.trim());
             this.dos.flush();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    private void sendObjectToServer(Object obj){
+        try {
+            this.oos.writeObject(obj);
+            this.oos.flush();
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -48,17 +59,17 @@ public class Client {
      * @author rtanyildizi
      */
     public void sendMessage(String message){
-        this.sendRequestToServer("/!m/%s/!e/".formatted(message));
+        this.sendDataToServer("/!m/%s/!e/".formatted(message));
     }
     
     /**
      * Server'a disconnect talebi gönderir.
      */
     public void disconnect() throws IOException  {
-         final String disconnectMsg = "/!d//!e/";
-         this.sendRequestToServer(disconnectMsg);
-         this.dos.close();
-         this.socket.close();
+        final String disconnectMsg = "/!d//!e/";
+        this.sendDataToServer(disconnectMsg);
+        this.dos.close();
+        this.socket.close();
     }
     
     /**
@@ -70,6 +81,14 @@ public class Client {
     public void connect() throws IOException{
         this.socket = new Socket(this.host, this.port);
         this.dos = new DataOutputStream(socket.getOutputStream());
-        this.sendRequestToServer("/!c/%s/!e/".formatted(this.username));
+        this.sendDataToServer("/!c/%s/!e/".formatted(this.username));
+    }
+    
+    public void connectListenerToServer(ServerListener serverListener){
+        this.sendObjectToServer(serverListener);
+    }
+    
+    public void changeUsername(String newUsername){
+        this.sendDataToServer("/!rn/%s/!e/".formatted(newUsername));
     }
 }

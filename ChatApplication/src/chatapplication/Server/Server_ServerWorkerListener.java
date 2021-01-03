@@ -5,8 +5,6 @@
  */
 package chatapplication.Server;
 
-import chatApplication.ServerWorker.ServerWorkerListener;
-
 
 /**
  *
@@ -21,6 +19,16 @@ class Server_ServerWorkerListener implements ServerWorkerListener  {
     @Override
     public void onClientDisconnect(String id, String username) {
         this.server.onClientDisconnect(id, username);
+    }
+
+    @Override
+    public void onClientSendMessage(String username) {
+        this.server.onClientSendMessage(username);
+    }
+
+    @Override
+    public void onClientChangeUsername(String id, String newUsername) {
+        this.server.onClientChangeUsername(id, newUsername);
     }
     
 }

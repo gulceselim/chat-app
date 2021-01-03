@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatapplication.Server.Pages;
+package chatapplication.Client.Pages;
 
 import chatapplication.Server.ServerClientModel;
 import chatapplication.Server.ServerListener;
@@ -12,24 +12,23 @@ import java.util.List;
 
 /**
  *
- * @author rtanyildizi
+ * @author Selim
  */
+public class ClientMessagePage_ServerListener implements ServerListener{
+    ClientMessagePage clientMessagePage;
 
-class ServerLogPage_ServerListener implements ServerListener {
-
-    ServerLogPage serverLogPage;
-
-    public ServerLogPage_ServerListener(ServerLogPage serverLogPage) {
-        this.serverLogPage = serverLogPage;
+    public ClientMessagePage_ServerListener(ClientMessagePage clientMessagePage) {
+        this.clientMessagePage = clientMessagePage;
     }
-
+    
     @Override
     public void onServerLog(String logMessage, Color color) {
-        this.serverLogPage.onServerLog(logMessage, color);
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void onNewUserList(List<ServerClientModel> model) {
-        this.serverLogPage.onNewUserList(model);
+        this.clientMessagePage.onNewUserList(model);
     }
+    
 }

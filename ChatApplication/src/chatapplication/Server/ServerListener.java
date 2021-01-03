@@ -5,8 +5,8 @@
  */
 package chatapplication.Server;
 
-import chatapplication.Server.Pages.ServerLogPage;
 import java.awt.Color;
+import java.util.List;
 
 /**
  * Server'ı dinleyen elementler
@@ -14,7 +14,7 @@ import java.awt.Color;
  */
 public interface ServerListener  {
     void onServerLog(String logMessage, Color color);
-    void onNewClient(ServerClientModel model);
+    void onNewUserList(List<ServerClientModel> model);
 }
 
 

@@ -45,15 +45,11 @@ public class ServerEventHandler {
         });
     }
     
-    /**
-     * Yeni bir Client bağlandığında, bu Client'a ait ServerClientModel nesnesini
-     * dinleyen tüm serverListenerlara iletir.
-     * @param model İletilecek ServerClientModel nesnesi
-     */
-    public void emitNewClient(ServerClientModel model) {
+    public void emitNewUserList(List<ServerClientModel> model){
         serverListeners.forEach(listener -> {
-            listener.onNewClient(model);
+           listener.onNewUserList(model); 
         });
     }
+    
     
 }

@@ -6,8 +6,12 @@
 package chatapplication.Client.Pages;
 
 import chatapplication.Client.Client;
+import chatapplication.Server.Server;
+import chatapplication.Server.ServerClientModel;
 import javax.swing.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,7 +20,7 @@ import java.util.logging.Logger;
  * @author rtanyildizi
  */
 public class ClientMessagePage extends JFrame {
-
+    Server server;
     Client client;
 
     public ClientMessagePage() {
@@ -52,7 +56,30 @@ public class ClientMessagePage extends JFrame {
             JOptionPane.showMessageDialog(this, "Error occured while disconnecting from server. Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    
+    /**
+     * 
+     */
+    void changeUsername(){
+        String newUsername = tfChangeUsername.getText().trim();
+        if(newUsername != null && !"".equals(newUsername)){
+            this.client.changeUsername(newUsername);
+        }else{
+            JOptionPane.showMessageDialog(this, "Username can not be empty!", "Warning", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+    
+    public void onNewUserList(List<ServerClientModel> newUserList){
+        DefaultListModel<String> model = (DefaultListModel<String>) lsUsers.getModel();
+        model.setSize(0);
+        newUserList.forEach((clientModel) -> {
+            model.addElement(clientModel.getUsername());
+        });
+        lsUsers.setModel(model);
+    }
+    
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -65,6 +92,11 @@ public class ClientMessagePage extends JFrame {
         tfMessage = new javax.swing.JTextField();
         btnSendMessage = new javax.swing.JButton();
         btnDisconnect = new javax.swing.JButton();
+        btnChangeUsername = new javax.swing.JButton();
+        tfChangeUsername = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        lsUsers = new javax.swing.JList<>();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -94,25 +126,56 @@ public class ClientMessagePage extends JFrame {
             }
         });
 
+        btnChangeUsername.setText("Change Username");
+        btnChangeUsername.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChangeUsernameActionPerformed(evt);
+            }
+        });
+
+        lsUsers.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(lsUsers);
+
+        jLabel1.setText("Users");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tfMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnDisconnect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSendMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(tfMessage, javax.swing.GroupLayout.DEFAULT_SIZE, 673, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnDisconnect, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(tfChangeUsername)
+                    .addComponent(btnChangeUsername, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnSendMessage, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(58, 58, 58))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnDisconnect)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 122, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 136, Short.MAX_VALUE)
+                .addComponent(tfChangeUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnChangeUsername)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tfMessage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSendMessage))
@@ -138,10 +201,19 @@ public class ClientMessagePage extends JFrame {
         this.disconnect();
     }//GEN-LAST:event_formWindowClosing
 
+    private void btnChangeUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeUsernameActionPerformed
+        this.changeUsername();
+    }//GEN-LAST:event_btnChangeUsernameActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnChangeUsername;
     private javax.swing.JButton btnDisconnect;
     private javax.swing.JButton btnSendMessage;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JList<String> lsUsers;
+    private javax.swing.JTextField tfChangeUsername;
     private javax.swing.JTextField tfMessage;
     // End of variables declaration//GEN-END:variables
 }
