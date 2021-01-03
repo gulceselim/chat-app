@@ -8,13 +8,14 @@ import java.net.*;
  * 
  * @author rtanyildizi
  */
-public class Client {
+public class Client{
     ClientWorker worker;
     DataOutputStream dos;
     Socket socket;
     String username;
     String host;
     String id;
+    String message;
     int port;
     
     /**
@@ -28,14 +29,15 @@ public class Client {
         this.username = username;
         this.host = host;
         this.port = port;
-        
+    }
+
+    public String getUsername() {
+        return username;
     }
     
-    
-    private void onClientIdSent(String id) {
+    public void onClientIdSent(String id) {
         this.id = id;
     }
-    
     
     
     /**
@@ -83,10 +85,10 @@ public class Client {
     public void connect() throws IOException{
         this.socket = new Socket(this.host, this.port);
         this.dos = new DataOutputStream(socket.getOutputStream());
-        
+        Client_ClientWorkerListener listener = new Client_ClientWorkerListener(this);
         
         ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-        this.worker = new ClientWorker(ois);
+        this.worker = new ClientWorker(ois, listener);
         this.worker.listen();
         
         

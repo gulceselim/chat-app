@@ -11,9 +11,8 @@ import chatapplication.Server.ServerClientModel;
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -22,6 +21,7 @@ import java.util.logging.Logger;
 public class ClientMessagePage extends JFrame {
     Server server;
     Client client;
+    List<ServerClientModel> clientList;
 
     public ClientMessagePage() {
         initComponents();
@@ -34,6 +34,7 @@ public class ClientMessagePage extends JFrame {
     public ClientMessagePage(Client client) {
         this.client = client;
         this.client.getAllUsers();
+        this.clientList = Collections.synchronizedList(new ArrayList<>());
         initComponents();
     }
 
@@ -70,10 +71,11 @@ public class ClientMessagePage extends JFrame {
         }
     }
     
-    public void onNewUserList(List<ServerClientModel> newUserList){
+    public void onClientList(ServerClientModel newUserList){
+        clientList.add(newUserList);
         DefaultListModel<String> model = (DefaultListModel<String>) lsUsers.getModel();
         model.setSize(0);
-        newUserList.forEach((clientModel) -> {
+        clientList.forEach((clientModel) -> {
             model.addElement(clientModel.getUsername());
         });
         lsUsers.setModel(model);

@@ -90,7 +90,9 @@ public class Server extends Thread {
         this.oos.writeObject(new Packet(id, "clientId"));
     }
     
-    
+    private void sendClientList(ServerClientModel clientList) throws IOException {
+        this.oos.writeObject(new Packet(clientList, "clientList"));
+    }
    
     /**
      * Client'lar tarafından ServerSocket'a yapılan bağlantı taleplerini kabul
@@ -121,6 +123,7 @@ public class Server extends Thread {
                             this.sendClientIdBack(id);
 
                             String connectMsg = "❤ %s connected to the server from /%s:%d".formatted(username, s.getInetAddress().getHostAddress(), s.getPort());
+                            this.sendClientList(scm);
                             
                             this.eventHandler.emitNewUserList(this.clientModels);
                             this.eventHandler.emitServerLog(connectMsg, new Color(0, 120, 0));

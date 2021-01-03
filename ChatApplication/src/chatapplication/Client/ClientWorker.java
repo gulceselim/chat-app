@@ -6,8 +6,10 @@
 package chatapplication.Client;
 
 import chatapplication.Server.Packet;
+import chatapplication.Server.ServerClientModel;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,21 +19,22 @@ import java.util.logging.Logger;
  */
 public class ClientWorker {
     ObjectInputStream ois;
+    ClientWorkerEventHandler clientWorkerEventHandler;
     boolean running;
 
     public void setRunning(boolean running) {
         this.running = running;
     }
 
-    public ClientWorker(ObjectInputStream ois) {
+    public ClientWorker(ObjectInputStream ois, Client_ClientWorkerListener listener) {
         this.ois = ois;
         this.running = true;
+        clientWorkerEventHandler = new ClientWorkerEventHandler();
+        clientWorkerEventHandler.addWorkerClientListener(listener);
     }
-    
     
     public void listen() {
         new Thread(() -> {
-            
             while(this.running) {
                 try {
                     Packet pack = (Packet) ois.readObject();
@@ -46,7 +49,9 @@ public class ClientWorker {
     
     private void packetProcessor(Packet packet) {
         if(packet.getObjName().equals("clientId")) {
-            System.out.println("client id ataması için listener oluştur. id: " + packet.getObj().toString());
+            this.clientWorkerEventHandler.emitClientIdSent((String)packet.getObj());
+        }else if(packet.getObjName().equals("clientList")){
+            this.clientWorkerEventHandler.emitClientList((ServerClientModel) packet.getObj());
         }
     }
     
