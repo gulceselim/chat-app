@@ -3,9 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatapplication.Server;
-
-import java.awt.Color;
+package chatApplication.ServerWorker;
 
 /**
  * ServerWorker'ı dinleyen elementler: Server

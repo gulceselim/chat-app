@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatapplication.Server;
+package chatApplication.ServerWorker;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -16,12 +16,16 @@ import java.util.logging.Logger;
  *
  * @author rtanyildizi
  */
-class ServerWorker {
+public class ServerWorker {
     DataInputStream dis;
     String clientId;
     String clientUsername;
+    ServerWorkerEventHandler eventHandler;
     boolean running;
-    List<ServerWorkerListener> serverWorkerListeners;
+    
+    public ServerWorkerEventHandler getEventHandler() {
+        return eventHandler;
+    }
     
     /**
      * @param dis Client tarafından gönderilen mesajların dinlenileceği DataInputStream nesnesi
@@ -32,7 +36,7 @@ class ServerWorker {
         this.clientId = clientId;
         this.clientUsername = clientUsername;
         this.running = true;
-        this.serverWorkerListeners = new ArrayList<>();
+        this.eventHandler = new ServerWorkerEventHandler();
     }
     
     /**
@@ -53,24 +57,15 @@ class ServerWorker {
         }, "listen").start(); 
         
     }
-    
-    public void addServerWorkerListener(ServerWorkerListener listener) {
-        this.serverWorkerListeners.add(listener);
-    }
-    
-    private void emitClientDisconnect() {
-        this.serverWorkerListeners.forEach((listener) -> {
-            listener.onClientDisconnect(this.clientId, this.clientUsername);
-        });
-    }
-    
+
+  
     
     /**
      * ServerWorker nesnesinin çalışmasını durdurur.
      */
     private void stopWorker() {
         this.running = false;
-        this.emitClientDisconnect();
+        this.eventHandler.emitClientDisconnect(this.clientId, this.clientUsername);
     }
     
     private void messageProcessor(String message) {

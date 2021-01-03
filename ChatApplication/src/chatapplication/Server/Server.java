@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,10 +20,13 @@ public class Server extends Thread {
     int port;
     ServerSocket serverSocket;
     DateTimeFormatter formatter;
-
+    ServerEventHandler eventHandler;
     List<ServerClientModel> clientModels;
+    
+    public ServerEventHandler getEventHandler() {
+        return eventHandler;
+    }
 
-    List<ServerListener> serverListeners;
 
     /**
      * Belirtilen port üzerinde bir ServerSocket oluşturur
@@ -34,10 +36,10 @@ public class Server extends Thread {
      * @author rtanyildizi
      */
     public Server(int port) throws IOException {
-        this.serverListeners = new ArrayList<>();
-        this.clientModels = Collections.synchronizedList(new ArrayList<>());
         this.port = port;
+        this.clientModels = Collections.synchronizedList(new ArrayList<>());
         this.serverSocket = new ServerSocket(this.port);
+        this.eventHandler = new ServerEventHandler();
     }
 
     /**
@@ -47,7 +49,7 @@ public class Server extends Thread {
     @Override
     public void run() {
         String serverMsg = "✔ Server has started successfully at http://%s:%d".formatted("localhost", this.port);
-        this.emitServerLog(serverMsg, new Color(0, 0, 120));
+        this.eventHandler.emitServerLog(serverMsg, new Color(0, 0, 120));
         receive();
     }
     
@@ -61,49 +63,10 @@ public class Server extends Thread {
     public void onClientDisconnect(String clientId, String clientUsername) {
         this.clientModels.removeIf((model) -> (model.getId().equals(clientId)));
         String dscMsg = "💔 Client %s disconnected from the server".formatted(clientUsername);
-        this.emitServerLog(dscMsg, new Color(180, 0, 0));    
+        this.eventHandler.emitServerLog(dscMsg, new Color(180, 0, 0));    
     }
 
-    
-    /**
-     * serverListeners listesine yeni bir server listener ekler.
-     * @param listener Listeye eklenecek listener nesnesi.
-     * @author rtanyildizi
-     */
-    public void addServerListener(ServerListener listener) {
-        this.serverListeners.add(listener);
-    }
-
-    /**
-     * Server log mesajını formatlar, mesaj ve renk bilgisini 
-     * dinleyen tüm ServerListener'lara iletir.
-     *
-     * @param message İletilecek mesaj
-     * @param color Mesajın görüntleneceği renk
-     * @author rtanyildizi
-     */
-    private void emitServerLog(String message, Color color) {
-        // Tüm ServerListener'lar için onMessage methodunu çalıştır.
-        final String formattedMessage = "%s\n\r".formatted(message);
-        serverListeners.forEach(listener -> {
-            listener.onServerLog(formattedMessage, color);
-        });
-    }
-    
-    /**
-     * Yeni bir Client bağlandığında, bu Client'a ait ServerClientModel nesnesini
-     * dinleyen tüm serverListenerlara iletir.
-     * @param model İletilecek ServerClientModel nesnesi
-     */
-    private void emitNewClient(ServerClientModel model) {
-        serverListeners.forEach(listener -> {
-            listener.onNewClient(model);
-        });
-    }
-    
-    
-    
-
+   
     /**
      * Client'lar tarafından ServerSocket'a yapılan bağlantı taleplerini kabul
      * etmek üzere bir thread oluşturur. Eğer bağlantı talebiyle gönderilen
@@ -124,19 +87,18 @@ public class Server extends Thread {
                         final String username = commandTrimmed.substring(0, commandTrimmed.length() - 4);
 
                         if (username != null && !"".equals(username)) {
-                            final String id = UUID.randomUUID().toString();
-
-                            ServerClientModel scm = new ServerClientModel(dis, id, username, s.getPort(), new Server_ServerWorkerListener(this));
+                            
+                            ServerClientModel scm = new ServerClientModel(dis, username, s.getPort(), new Server_ServerWorkerListener(this));
                             this.clientModels.add(scm);
 
                             String connectMsg = "❤ %s connected to the server from /%s:%d".formatted(username, s.getInetAddress().getHostAddress(), s.getPort());
                             
-                            this.emitNewClient(scm);
-                            this.emitServerLog(connectMsg, new Color(0, 120, 0));
+                            this.eventHandler.emitNewClient(scm);
+                            this.eventHandler.emitServerLog(connectMsg, new Color(0, 120, 0));
 
                         } else {
                             String errorMsg = "✘ There is a connection request from %s:%d with an invalid username".formatted(s.getInetAddress().getHostAddress(), s.getPort());
-                            this.emitServerLog(errorMsg, new Color(120, 0, 0));
+                            this.eventHandler.emitServerLog(errorMsg, new Color(120, 0, 0));
                         }
                     }
                 } catch (IOException ex) {

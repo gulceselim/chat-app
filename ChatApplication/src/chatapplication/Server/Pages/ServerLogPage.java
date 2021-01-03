@@ -43,7 +43,7 @@ public class ServerLogPage extends javax.swing.JFrame {
         // içerisine renklendirilmiş şekilde ekler.
 
         initComponents();
-        server.addServerListener(new ServerLogPage_ServerListener(this));
+        server.getEventHandler().addServerListener(new ServerLogPage_ServerListener(this));
         this.server.start();
     }
 
@@ -58,6 +58,7 @@ public class ServerLogPage extends javax.swing.JFrame {
         model.addRow(new Object[]{scm.getId(), scm.getUsername(), scm.getPort()});
     }
 
+    
     private void addColoredText(JTextPane pane, String text, Color color) {
         StyledDocument doc = pane.getStyledDocument();
 
