@@ -157,6 +157,7 @@ public class Server extends Thread {
                             this.sendClientIdBack(oos, id);
 
                             String connectMsg = "❤ %s connected to the server from /%s:%d".formatted(username, s.getInetAddress().getHostAddress(), s.getPort());
+                            
                             this.sendClientList();
                             
                             this.eventHandler.emitNewUserList(this.clientModels);

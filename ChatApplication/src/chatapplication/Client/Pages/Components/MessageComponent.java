@@ -6,6 +6,8 @@
 package chatapplication.Client.Pages.Components;
 
 import chatapplication.Server.Message;
+import java.awt.Dimension;
+import javax.swing.Box;
 
 /**
  *
@@ -14,11 +16,12 @@ import chatapplication.Server.Message;
 public class MessageComponent extends javax.swing.JPanel {
     Message message;
     /**
-     * Creates new form MessageComponent
+     * Yeni bir MessageComponent oluşturur.
+     * @param message Gösterilecek Mesaj nesnesi
      */
     public MessageComponent(Message message) {
         this.message = message;
-        this.setBounds(0,15,120,60);
+
         initComponents();
         lblUsername.setText(this.message.getClient().getUsername());
         lblMessage.setText(this.message.getMessage());
@@ -38,10 +41,14 @@ public class MessageComponent extends javax.swing.JPanel {
         lblMessage = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(204, 255, 204));
+        setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        setMaximumSize(new java.awt.Dimension(250, 60));
+        setPreferredSize(new java.awt.Dimension(250, 60));
 
         lblUsername.setText("Username");
 
-        lblMessage.setText("Merhaba ben Selim Alüğğğğğğğğğğ");
+        lblMessage.setBackground(new java.awt.Color(204, 255, 204));
+        lblMessage.setText("Merhaba ben Selim, bu bir mesajdır. Bu uzun bir mesaj. Bu mesaj uzundur vsvsvs.");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -60,7 +67,7 @@ public class MessageComponent extends javax.swing.JPanel {
                 .addGap(5, 5, 5)
                 .addComponent(lblUsername)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblMessage, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
+                .addComponent(lblMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

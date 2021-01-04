@@ -10,7 +10,6 @@ import chatapplication.Server.Packet;
 import chatapplication.Server.ServerClientSerializable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.lang.reflect.Array;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

@@ -11,11 +11,15 @@ import chatapplication.Server.Message;
 import chatapplication.Server.Server;
 import chatapplication.Server.ServerClientModel;
 import chatapplication.Server.ServerClientSerializable;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.swing.border.EmptyBorder;
 
 /**
  *
@@ -37,7 +41,6 @@ public class ClientMessagePage extends JFrame {
     public ClientMessagePage(Client client) {
         this.client = client;
         this.client.getEventHandler().addWorkerClientListener(new ClientMessagePage_ClientWorkerListener(this));
-        this.client.getAllUsers();
         this.clientList = Collections.synchronizedList(new ArrayList<>());
         initComponents();
     }
@@ -47,8 +50,10 @@ public class ClientMessagePage extends JFrame {
      */
     public void sendMessage() {
         final String message = tfMessage.getText();
-        this.client.sendMessage(message);
-        tfMessage.setText("");
+        if(!message.trim().equals("")) {
+            this.client.sendMessage(message);
+            tfMessage.setText("");
+        }
     }
     
     /**
@@ -83,12 +88,34 @@ public class ClientMessagePage extends JFrame {
         lsUsers.setListData(usernames);
     }
     
-    public void onClientMessageSent(Message messageSentByUsername){
-        MessageComponent messageComp = new MessageComponent(messageSentByUsername);
-        pnlMessageBoard.add(messageComp);
+    public void onClientMessageSent(Message message){
+        
+        MessageComponent messageComp = new MessageComponent(message);
+        messageComp.setAlignmentX(LEFT_ALIGNMENT);
+        Component margin = Box.createRigidArea(new Dimension(0, 10));
+        
+        
+        if(message.getClient().getId().equals(this.client.getId())) {
+            var r = messageComp.getBounds();
+            messageComp.setBounds(320, r.y, r.width, r.height);
+            pnlMessageBoard.add(messageComp);
+
+        } else {
+            var r = messageComp.getBounds();
+            messageComp.setBounds(0, r.y, r.width, r.height);
+            pnlMessageBoard.add(messageComp);
+        }
+        
+       
+     
+        pnlMessageBoard.add(margin);
         pnlMessageBoard.repaint();
+        
         this.revalidate();
-        System.out.println(messageSentByUsername);
+        JScrollBar vertical = jScrollPane.getVerticalScrollBar();
+        vertical.setValue( vertical.getMaximum() );
+
+        System.out.println(message);
     }
     
     /**
@@ -155,8 +182,13 @@ public class ClientMessagePage extends JFrame {
 
         jLabel1.setText("Users");
 
-        pnlMessageBoard.setLayout(new javax.swing.BoxLayout(pnlMessageBoard, javax.swing.BoxLayout.LINE_AXIS));
+        jScrollPane.setAlignmentX(0.0F);
+
+        java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout(java.awt.FlowLayout.LEFT);
+        flowLayout1.setAlignOnBaseline(true);
+        pnlMessageBoard.setLayout(flowLayout1);
         jScrollPane.setViewportView(pnlMessageBoard);
+        pnlMessageBoard.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

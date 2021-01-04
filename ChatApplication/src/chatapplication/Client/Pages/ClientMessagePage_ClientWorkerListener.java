@@ -22,7 +22,6 @@ public class ClientMessagePage_ClientWorkerListener implements ClientWorkerListe
     
     @Override
     public void onClientIdSent(String id) {
-        return;
     }
 
     @Override

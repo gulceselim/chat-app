@@ -7,7 +7,6 @@ package chatapplication.Client;
 
 import chatapplication.Server.Message;
 import chatapplication.Server.ServerClientSerializable;
-import java.lang.reflect.Array;
 
 /**
  *
@@ -27,12 +26,10 @@ public class Client_ClientWorkerListener implements ClientWorkerListener{
 
     @Override
     public void onClientList(ServerClientSerializable[] clientList) {
-        return;
     }
 
     @Override
     public void onClientMessageSent(Message messageSentByUsername) {
-        return;
     }
 
 }
