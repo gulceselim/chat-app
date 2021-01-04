@@ -5,13 +5,12 @@
  */
 package chatapplication.Client;
 
+import chatapplication.Server.Message;
 import chatapplication.Server.Packet;
-import chatapplication.Server.ServerClientModel;
 import chatapplication.Server.ServerClientSerializable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Array;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,7 +48,6 @@ public class ClientWorker {
                     Logger.getLogger(ClientWorker.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        
         }, "listen").start();
     }
     
@@ -64,6 +62,8 @@ public class ClientWorker {
                 System.out.println(array[i].getId());
             } 
             this.clientWorkerEventHandler.emitClientList((ServerClientSerializable[])packet.getObj()); 
+        } else if(packet.getObjName().equals("clientMessage")){
+            this.clientWorkerEventHandler.emitClientMessageSent((Message) packet.getObj());
         }
     }
     

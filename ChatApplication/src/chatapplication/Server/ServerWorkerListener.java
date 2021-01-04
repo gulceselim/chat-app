@@ -5,12 +5,14 @@
  */
 package chatapplication.Server;
 
+import java.io.ObjectOutputStream;
+
 /**
  * ServerWorker'ı dinleyen elementler: Server
  * @author rtanyildizi
  */
 public interface ServerWorkerListener  {
     void onClientDisconnect(String id, String username);
-    void onClientSendMessage(String username);
+    void onClientSendMessage(String id, String message);
     void onClientChangeUsername(String id, String newUsername);
 }

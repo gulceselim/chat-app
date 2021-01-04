@@ -7,6 +7,7 @@ package chatapplication.Server;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,6 +35,9 @@ public class ServerWorker {
      * @param dis Client tarafından gönderilen mesajların dinlenileceği
      * DataInputStream nesnesi
      * @author rtanyildizi
+     * @param oos
+     * @param clientId
+     * @param clientUsername
      */
     public ServerWorker(DataInputStream dis, String clientId, String clientUsername) {
         this.dis = dis;
@@ -76,8 +80,8 @@ public class ServerWorker {
         if (message.startsWith("/!d/") && message.endsWith("/!e/")) {
             this.stopWorker();
         } else if (message.startsWith("/!m/") && message.endsWith("/!e/")) {
-            this.eventHandler.emitClientSendMessage(this.clientUsername);
             final String messageContent = message.substring(4, message.length() - 4);
+            this.eventHandler.emitClientSendMessage(this.clientId, messageContent);
             System.out.println(messageContent);
         } else if (message.startsWith("/!rn/") && message.endsWith("/!e/")) {
             String username = message.substring(5, message.length() - 4);

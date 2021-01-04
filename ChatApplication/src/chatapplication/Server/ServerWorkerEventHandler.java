@@ -5,6 +5,7 @@
  */
 package chatapplication.Server;
 
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,9 +30,9 @@ public class ServerWorkerEventHandler {
         });
     }
     
-    public void emitClientSendMessage(String username){
+    public void emitClientSendMessage(String id, String message){
         this.serverWorkerListeners.forEach((listener) -> {
-            listener.onClientSendMessage(username);
+            listener.onClientSendMessage(id, message);
         });
     }
     

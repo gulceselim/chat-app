@@ -5,7 +5,9 @@
  */
 package chatapplication.Client;
 
+import chatapplication.Server.Message;
 import chatapplication.Server.ServerClientSerializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +35,12 @@ public class ClientWorkerEventHandler {
     public void emitClientList(ServerClientSerializable[] clientList){
         clientWorkerListener.forEach((listener) -> {
             listener.onClientList(clientList);
+        });
+    }
+    
+    public void emitClientMessageSent(Message messageSentByUsername){
+        clientWorkerListener.forEach((listener) -> {
+            listener.onClientMessageSent(messageSentByUsername);
         });
     }
     

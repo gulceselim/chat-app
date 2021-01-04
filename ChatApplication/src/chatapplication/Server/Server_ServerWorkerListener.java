@@ -5,6 +5,11 @@
  */
 package chatapplication.Server;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  *
@@ -22,8 +27,8 @@ class Server_ServerWorkerListener implements ServerWorkerListener  {
     }
 
     @Override
-    public void onClientSendMessage(String username) {
-        this.server.onClientSendMessage(username);
+    public void onClientSendMessage(String id, String message) {
+        this.server.onClientSendMessage(id, message);
     }
 
     @Override

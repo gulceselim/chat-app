@@ -6,6 +6,7 @@
 package chatapplication.Client.Pages;
 
 import chatapplication.Client.ClientWorkerListener;
+import chatapplication.Server.Message;
 import chatapplication.Server.ServerClientSerializable;
 
 /**
@@ -27,5 +28,10 @@ public class ClientMessagePage_ClientWorkerListener implements ClientWorkerListe
     @Override
     public void onClientList(ServerClientSerializable[] clientList) {
         this.clientMessagePage.onClientList(clientList);
+    }
+
+    @Override
+    public void onClientMessageSent(Message messageSentByUsername) {
+        this.clientMessagePage.onClientMessageSent(messageSentByUsername);
     }
 }

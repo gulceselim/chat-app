@@ -5,6 +5,7 @@
  */
 package chatapplication.Client;
 
+import chatapplication.Server.Message;
 import chatapplication.Server.ServerClientSerializable;
 import java.lang.reflect.Array;
 
@@ -15,4 +16,5 @@ import java.lang.reflect.Array;
 public interface ClientWorkerListener {
     void onClientIdSent(String id);
     void onClientList(ServerClientSerializable[] clientList);
+    void onClientMessageSent(Message messageSentByUsername);
 }

@@ -68,9 +68,13 @@ public class Server extends Thread {
         this.eventHandler.emitNewUserList(this.clientModels);
     }
     
-    public void onClientSendMessage(String username){
-        String msg = "📨 Client %s sent message".formatted(username);
-        this.eventHandler.emitServerLog(msg, new Color(180, 30, 110));
+    public void onClientSendMessage(String id, String message){
+        var client = this.findClientModelById(id);
+        if(client != null){
+            String msg = "📨 Client %s sent message".formatted(client.getUsername());
+            this.eventHandler.emitServerLog(msg, new Color(180, 30, 110));
+            this.sendMessageToClients(client, message);
+        }
     }
     
     public void onClientChangeUsername(String id, String newUsername){
@@ -92,10 +96,31 @@ public class Server extends Thread {
     
     private void sendClientList() {
         ServerClientSerializable[] array = ServerClientSerializable.fromServerClientModelList(clientModels);
+        sendPacketToAllClients(new Packet(array, "clientList"));
+    }
+    
+    private void sendMessageToClients(ServerClientModel client, String message){
+        var clientSerializable = client.toSerializable();
+        Message messageObj = new Message(clientSerializable, message);
+        sendPacketToAllClients(new Packet(messageObj, "clientMessage"));
         
-        clientModels.forEach((client) -> {
+    }
+    
+    private ServerClientModel findClientModelById(String id){
+        ServerClientModel find = null;
+        for (int i = 0; i < this.clientModels.size(); i++) {
+            var clientModel = this.clientModels.get(i);
+            if(clientModel.getId().equals(id)){
+                    find = clientModel;
+                }
+        }
+        return find;
+    }
+    
+    private void sendPacketToAllClients(Packet packet){
+        this.clientModels.forEach((client) -> {
             try {
-                client.getOos().writeObject(new Packet(array, "clientList"));
+                client.getOos().writeObject((packet));
             } catch (IOException ex) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
             }
