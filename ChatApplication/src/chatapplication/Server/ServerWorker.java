@@ -88,6 +88,9 @@ public class ServerWorker {
             if (username != null && !"".equals(username)) {
                 this.eventHandler.emitClientChangeUsername(this.clientId, username);
             }
+        } else if(message.equals("/!all//!e/")) {
+            System.out.println("Came here boy from message processor");
+            this.eventHandler.emitSendClientList();
         }
     }
 }

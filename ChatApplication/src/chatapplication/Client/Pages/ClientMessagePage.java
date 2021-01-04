@@ -11,13 +11,10 @@ import chatapplication.Server.Message;
 import chatapplication.Server.Server;
 import chatapplication.Server.ServerClientModel;
 import chatapplication.Server.ServerClientSerializable;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import javax.swing.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.swing.border.EmptyBorder;
 
@@ -39,10 +36,12 @@ public class ClientMessagePage extends JFrame {
      * @param client
      */
     public ClientMessagePage(Client client) {
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.client = client;
-        this.client.getEventHandler().addWorkerClientListener(new ClientMessagePage_ClientWorkerListener(this));
-        this.clientList = Collections.synchronizedList(new ArrayList<>());
         initComponents();
+        this.client.getAllClients();
+        this.client.getWorkerEventHandler().addWorkerClientListener(new ClientMessagePage_ClientWorkerListener(this));
+
     }
 
     /**
@@ -62,7 +61,8 @@ public class ClientMessagePage extends JFrame {
     void disconnect() {   
         try {
             this.client.disconnect();
-            this.dispose();
+            this.client = null;
+            System.exit(0);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Error occured while disconnecting from server. Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -81,6 +81,7 @@ public class ClientMessagePage extends JFrame {
     }
     
     public void onClientList(ServerClientSerializable[] clientList){
+        System.out.println("Hello from on client list");
         String[] usernames = new String[clientList.length];
         for (int i = 0; i < usernames.length; i++) {
             usernames[i] = clientList[i].getUsername();

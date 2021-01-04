@@ -66,6 +66,7 @@ public class Server extends Thread {
         String dscMsg = "💔 Client %s disconnected from the server".formatted(clientUsername);
         this.eventHandler.emitServerLog(dscMsg, new Color(180, 0, 0));
         this.eventHandler.emitNewUserList(this.clientModels);
+        this.sendClientList();
     }
     
     public void onClientSendMessage(String id, String message){
@@ -88,6 +89,10 @@ public class Server extends Thread {
                 this.sendClientList();
             }
         });
+    }
+    
+    public void onSendClientList() {
+        this.sendClientList();
     }
     
     private void sendClientIdBack(ObjectOutputStream oos, String id) throws IOException {
@@ -118,6 +123,7 @@ public class Server extends Thread {
     }
     
     private void sendPacketToAllClients(Packet packet){
+        System.out.println("came here boys from send packet to all clientt");
         this.clientModels.forEach((client) -> {
             try {
                 client.getOos().writeObject((packet));
@@ -154,11 +160,9 @@ public class Server extends Thread {
                             
                             ServerClientModel scm = new ServerClientModel(dis, oos, id, username, s.getPort(), new Server_ServerWorkerListener(this));
                             this.clientModels.add(scm);
-                            this.sendClientIdBack(oos, id);
-
-                            String connectMsg = "❤ %s connected to the server from /%s:%d".formatted(username, s.getInetAddress().getHostAddress(), s.getPort());
                             
-                            this.sendClientList();
+                            this.sendClientIdBack(oos, id);
+                            String connectMsg = "❤ %s connected to the server from /%s:%d".formatted(username, s.getInetAddress().getHostAddress(), s.getPort());
                             
                             this.eventHandler.emitNewUserList(this.clientModels);
                             this.eventHandler.emitServerLog(connectMsg, new Color(0, 120, 0));

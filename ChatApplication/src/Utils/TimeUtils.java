@@ -20,8 +20,15 @@ public class TimeUtils {
      */
     public static String getCurrentFormattedTime() {
         LocalDateTime time = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         String formattedTime = time.format(formatter);
         return formattedTime;
+    }
+    
+    public static String getCurrentFormattedDate() {
+        LocalDateTime date = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.mm.YYYY");
+        String formattedDate = date.format(formatter);
+        return formattedDate;
     }
 }

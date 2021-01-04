@@ -8,6 +8,7 @@ package chatapplication.Client;
 import chatapplication.Server.Message;
 import chatapplication.Server.ServerClientSerializable;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 /**
@@ -26,9 +27,14 @@ public class ClientWorkerEventHandler {
     }
     
     public void emitClientIdSent(String id){
-        clientWorkerListener.forEach((listener) -> {
-            listener.onClientIdSent(id);
-        });
+        try {
+            clientWorkerListener.forEach((listener) -> {
+                listener.onClientIdSent(id);
+            });    
+        } catch(ConcurrentModificationException ex) {
+            return;
+        }
+        
     }
     
     public void emitClientList(ServerClientSerializable[] clientList){

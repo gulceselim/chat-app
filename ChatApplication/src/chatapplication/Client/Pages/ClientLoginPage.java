@@ -39,17 +39,22 @@ public class ClientLoginPage extends javax.swing.JFrame {
             String username = tfClientUsername.getText();
             this.client = new Client("localhost", port, username);
             this.client.connect();
+            this.client.getEventHandler().addListener(new ClientLoginPage_ClientListener(this));
             
-            ClientMessagePage clientMessagePage = new ClientMessagePage(client);
-            // clientMessagePage sayfasını ekranın merkezine yerleştirir.
-            clientMessagePage.pack();
-            clientMessagePage.setLocationRelativeTo(null);
-            clientMessagePage.setVisible(true);
             this.setVisible(false);
         } catch(IOException e) {
             this.setVisible(true);
             JOptionPane.showMessageDialog(this, "Error occured while connecting to the server. Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+    
+    public void onCreatePage() {
+            System.out.println(this.client.getId());
+            ClientMessagePage clientMessagePage = new ClientMessagePage(this.client);
+            // clientMessagePage sayfasını ekranın merkezine yerleştirir.
+            clientMessagePage.pack();
+            clientMessagePage.setLocationRelativeTo(null);
+            clientMessagePage.setVisible(true);
     }
 
     /**

@@ -44,7 +44,8 @@ public class ServerLogPage extends javax.swing.JFrame{
 
     public void onServerLog(String logMessage, Color color) {
         final String time = TimeUtils.getCurrentFormattedTime();
-        this.addColoredText(tpServerLog, time + " ▶ ", Color.BLACK);
+        final String date = TimeUtils.getCurrentFormattedDate();
+        this.addColoredText(tpServerLog, "📆 " + date + " ⏰ " + time + " ▶ ", Color.BLACK);
         this.addColoredText(tpServerLog, logMessage, color);
     }
 

@@ -14,7 +14,7 @@ import chatapplication.Server.Pages.ServerHomePage;
  */
 public class ChatApplication {
     public static void main(String[] args) {
-        ClientLoginPage.main(args);
         ServerHomePage.main(args);
+        ClientLoginPage.main(args);
     }
 }

@@ -10,6 +10,7 @@ import chatapplication.Server.Packet;
 import chatapplication.Server.ServerClientSerializable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,7 +44,10 @@ public class ClientWorker {
                 try {
                     Packet pack = (Packet) ois.readObject();
                     packetProcessor(pack);
-                } catch (IOException | ClassNotFoundException ex) {
+                } catch (SocketException ex) {
+                    return; 
+                } 
+                catch (IOException | ClassNotFoundException ex) {
                     Logger.getLogger(ClientWorker.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -51,18 +55,18 @@ public class ClientWorker {
     }
     
     private void packetProcessor(Packet packet) {
-        if(packet.getObjName().equals("clientId")) {
-            this.clientWorkerEventHandler.emitClientIdSent((String)packet.getObj());
-        } else if(packet.getObjName().equals("clientList")){
-            
-            var array = (ServerClientSerializable[]) packet.getObj();
-            
-            for(int i = 0; i < array.length; ++i) {
-                System.out.println(array[i].getId());
-            } 
-            this.clientWorkerEventHandler.emitClientList((ServerClientSerializable[])packet.getObj()); 
-        } else if(packet.getObjName().equals("clientMessage")){
-            this.clientWorkerEventHandler.emitClientMessageSent((Message) packet.getObj());
+        switch (packet.getObjName()) {
+            case "clientId" -> this.clientWorkerEventHandler.emitClientIdSent((String)packet.getObj());
+            case "clientList" -> {
+                System.out.println("Hello from packet processor");
+                var array = (ServerClientSerializable[]) packet.getObj();
+                for(int i = 0; i < array.length; ++i) {
+                    System.out.println(array[i].getId());
+                }   this.clientWorkerEventHandler.emitClientList((ServerClientSerializable[])packet.getObj());
+            }
+            case "clientMessage" -> this.clientWorkerEventHandler.emitClientMessageSent((Message) packet.getObj());
+            default -> {
+            }
         }
     }
     

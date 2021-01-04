@@ -35,5 +35,10 @@ class Server_ServerWorkerListener implements ServerWorkerListener  {
     public void onClientChangeUsername(String id, String newUsername) {
         this.server.onClientChangeUsername(id, newUsername);
     }
+
+    @Override
+    public void onSendClientList() {
+        this.server.onSendClientList();
+    }
     
 }

@@ -42,5 +42,11 @@ public class ServerWorkerEventHandler {
         });
     }
     
+   public void emitSendClientList() {
+       this.serverWorkerListeners.forEach((listener) -> {
+           listener.onSendClientList();
+       });
+   }
+    
 
 }

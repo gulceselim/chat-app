@@ -15,4 +15,5 @@ public interface ServerWorkerListener  {
     void onClientDisconnect(String id, String username);
     void onClientSendMessage(String id, String message);
     void onClientChangeUsername(String id, String newUsername);
+    void onSendClientList();
 }

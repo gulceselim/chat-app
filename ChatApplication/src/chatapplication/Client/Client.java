@@ -16,6 +16,7 @@ public class Client {
     String host;
     String id;
     String message;
+    ClientEventHandler eventHandler;
     int port;
 
     /**
@@ -30,15 +31,23 @@ public class Client {
         this.username = username;
         this.host = host;
         this.port = port;
+        this.eventHandler = new ClientEventHandler();
     }
 
     /**
      * GETTERS AND SETTERS *
      */
     
-    public ClientWorkerEventHandler getEventHandler() {
+    
+    
+    public ClientWorkerEventHandler getWorkerEventHandler() {
         return this.worker.getClientWorkerEventHandler();
     }
+    
+      public ClientEventHandler getEventHandler() {
+        return eventHandler;
+    }
+
 
     public String getUsername() {
         return username;
@@ -48,6 +57,7 @@ public class Client {
         return id;
     }
 
+  
 
     /**
      * Server'a bağlanma talebi gönderir ve Server tarafından 
@@ -76,10 +86,8 @@ public class Client {
      */
     public void disconnect() throws IOException {
         final String disconnectMsg = "/!d//!e/";
-        this.sendDataToServer(disconnectMsg);
         this.worker.setRunning(false);
-        this.dos.close();
-        this.socket.close();
+        this.sendDataToServer(disconnectMsg);
     }
 
     /**
@@ -101,6 +109,12 @@ public class Client {
         this.sendDataToServer("/!rn/%s/!e/".formatted(newUsername));
     }
     
+    /**
+     * Server'dan var olan tüm Client'ların listesini talep eder.
+     */
+    public void getAllClients() {
+        this.sendDataToServer("/!all//!e/");
+    }
  
     
     /**
@@ -114,6 +128,7 @@ public class Client {
      */
     public void onClientIdSent(String id) {
         this.id = id;
+        this.eventHandler.emitCreatePage();
     }
 
 
