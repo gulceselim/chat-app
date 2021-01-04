@@ -5,8 +5,7 @@
  */
 package chatapplication.Client;
 
-import chatapplication.Server.ServerClientModel;
-import java.util.List;
+import chatapplication.Server.ServerClientSerializable;
 
 /**
  *
@@ -25,7 +24,7 @@ public class Client_ClientWorkerListener implements ClientWorkerListener{
     }
 
     @Override
-    public void onClientList(List<ServerClientModel> clientList) {
+    public void onClientList(ServerClientSerializable[] clientList) {
         return;
     }
 

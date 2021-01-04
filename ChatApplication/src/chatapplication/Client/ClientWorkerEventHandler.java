@@ -5,7 +5,7 @@
  */
 package chatapplication.Client;
 
-import chatapplication.Server.ServerClientModel;
+import chatapplication.Server.ServerClientSerializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class ClientWorkerEventHandler {
     List<ClientWorkerListener> clientWorkerListener;
-
+    
     public ClientWorkerEventHandler() {
         this.clientWorkerListener = new ArrayList<>();
     }
@@ -30,7 +30,7 @@ public class ClientWorkerEventHandler {
         });
     }
     
-    public void emitClientList(List<ServerClientModel> clientList){
+    public void emitClientList(ServerClientSerializable[] clientList){
         clientWorkerListener.forEach((listener) -> {
             listener.onClientList(clientList);
         });

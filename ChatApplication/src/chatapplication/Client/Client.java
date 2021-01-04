@@ -18,6 +18,7 @@ public class Client{
     String message;
     int port;
     
+    
     /**
      * Yeni bir Client nesnesi oluşturur.
      * @param host Client'ın bağlanacağı host adresi.
@@ -30,7 +31,11 @@ public class Client{
         this.host = host;
         this.port = port;
     }
-
+    
+    public ClientWorkerEventHandler getEventHandler(){
+        return this.worker.getClientWorkerEventHandler();
+    }
+    
     public String getUsername() {
         return username;
     }

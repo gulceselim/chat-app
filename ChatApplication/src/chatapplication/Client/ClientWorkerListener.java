@@ -5,8 +5,8 @@
  */
 package chatapplication.Client;
 
-import chatapplication.Server.ServerClientModel;
-import java.util.List;
+import chatapplication.Server.ServerClientSerializable;
+import java.lang.reflect.Array;
 
 /**
  *
@@ -14,5 +14,5 @@ import java.util.List;
  */
 public interface ClientWorkerListener {
     void onClientIdSent(String id);
-    void onClientList(List<ServerClientModel> clientList);
+    void onClientList(ServerClientSerializable[] clientList);
 }

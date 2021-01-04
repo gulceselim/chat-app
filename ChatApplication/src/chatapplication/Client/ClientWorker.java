@@ -10,6 +10,7 @@ import chatapplication.Server.ServerClientModel;
 import chatapplication.Server.ServerClientSerializable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.lang.reflect.Array;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,6 +22,10 @@ import java.util.logging.Logger;
 public class ClientWorker {
     ObjectInputStream ois;
     ClientWorkerEventHandler clientWorkerEventHandler;
+
+    public ClientWorkerEventHandler getClientWorkerEventHandler() {
+        return clientWorkerEventHandler;
+    }
     boolean running;
 
     public void setRunning(boolean running) {
@@ -58,7 +63,7 @@ public class ClientWorker {
             for(int i = 0; i < array.length; ++i) {
                 System.out.println(array[i].getId());
             } 
-            /*this.clientWorkerEventHandler.emitClientList((List<ServerClientModel>) packet.getObj()); */ 
+            this.clientWorkerEventHandler.emitClientList((ServerClientSerializable[])packet.getObj()); 
         }
     }
     

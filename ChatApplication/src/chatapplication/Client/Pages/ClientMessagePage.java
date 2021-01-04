@@ -8,11 +8,14 @@ package chatapplication.Client.Pages;
 import chatapplication.Client.Client;
 import chatapplication.Server.Server;
 import chatapplication.Server.ServerClientModel;
+import chatapplication.Server.ServerClientSerializable;
 import javax.swing.*;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.print.attribute.standard.Severity;
 
 /**
  *
@@ -33,6 +36,7 @@ public class ClientMessagePage extends JFrame {
      */
     public ClientMessagePage(Client client) {
         this.client = client;
+        this.client.getEventHandler().addWorkerClientListener(new ClientMessagePage_ClientWorkerListener(this));
         this.client.getAllUsers();
         this.clientList = Collections.synchronizedList(new ArrayList<>());
         initComponents();
@@ -71,13 +75,12 @@ public class ClientMessagePage extends JFrame {
         }
     }
     
-    public void onClientList(List<ServerClientModel> newUserList){
-        DefaultListModel<String> model = (DefaultListModel<String>) lsUsers.getModel();
-        model.setSize(0);
-        newUserList.forEach((clientModel) -> {
-            model.addElement(clientModel.getUsername());
-        });
-        lsUsers.setModel(model);
+    public void onClientList(ServerClientSerializable[] clientList){
+        String[] usernames = new String[clientList.length];
+        for (int i = 0; i < usernames.length; i++) {
+            usernames[i] = clientList[i].getUsername();
+        }
+        lsUsers.setListData(usernames);
     }
     
     

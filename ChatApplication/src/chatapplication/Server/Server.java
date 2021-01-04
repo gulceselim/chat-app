@@ -81,6 +81,7 @@ public class Server extends Thread {
                 final String msg = "📣 Client %s changed his/her username to %s".formatted(oldUsername,newUsername);
                 this.eventHandler.emitServerLog(msg, new Color(120, 30, 180));
                 this.eventHandler.emitNewUserList(clientModels);
+                this.sendClientList();
             }
         });
     }
@@ -89,7 +90,7 @@ public class Server extends Thread {
         oos.writeObject(new Packet(id, "clientId"));
     }
     
-    private void sendClientList() throws IOException {
+    private void sendClientList() {
         ServerClientSerializable[] array = ServerClientSerializable.fromServerClientModelList(clientModels);
         
         clientModels.forEach((client) -> {
