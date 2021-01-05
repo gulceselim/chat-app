@@ -6,8 +6,6 @@
 package chatapplication.Client.Pages.Components;
 
 import chatapplication.Server.Message;
-import java.awt.Dimension;
-import javax.swing.Box;
 
 /**
  *
@@ -25,6 +23,7 @@ public class MessageComponent extends javax.swing.JPanel {
         initComponents();
         lblUsername.setText(this.message.getClient().getUsername());
         lblMessage.setText(this.message.getMessage());
+        lblMessage.setForeground(this.message.getClient().getMessageColor());
     }
     
     

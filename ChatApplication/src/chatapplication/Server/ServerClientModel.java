@@ -5,6 +5,7 @@
  */
 package chatapplication.Server;
 
+import java.awt.Color;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -23,6 +24,7 @@ public class ServerClientModel {
     private String username;
     private int port;
     private ServerWorker worker;
+    private Color messageColor;
     
     /**
      * Yeni bir ServerClientModel nesnesi oluşturur.Client'ı dinleyerek taleplerine yanıt verecek ServerWorker nesnesini 
@@ -35,12 +37,13 @@ public class ServerClientModel {
      * @throws IOException 
      * @author rtanyildizi
      */
-    public ServerClientModel(DataInputStream dis, ObjectOutputStream oos, String id, String username, int port, ServerWorkerListener listener) throws IOException {
+    public ServerClientModel(DataInputStream dis, ObjectOutputStream oos, String id, String username, int port, Color messageColor, ServerWorkerListener listener) throws IOException {
         this.dis = dis;
         this.username = username;
         this.port = port;
         this.dis = dis;
         this.oos = oos;
+        this.messageColor = messageColor;
         
         this.id = id;
         
@@ -51,7 +54,7 @@ public class ServerClientModel {
     
     
     public ServerClientSerializable toSerializable() {
-        return new ServerClientSerializable(this.id, this.username, this.port);
+        return new ServerClientSerializable(this.id, this.username, this.port, this.messageColor);
     }
 
     public void setUsername(String username) {

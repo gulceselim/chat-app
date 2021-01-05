@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -148,9 +149,17 @@ public class Server extends Thread {
                     Socket s = this.serverSocket.accept();
                     DataInputStream dis = new DataInputStream(s.getInputStream());
                     ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
-
+                    
                     String message = dis.readUTF();
-
+                    
+                    Random rand = new Random();
+                    int low = 60;
+                    int high = 150;
+                    int r = rand.nextInt(high - low) + low;
+                    int g = rand.nextInt(high - low) + low;
+                    int b = rand.nextInt(high - low) + low;
+                    Color messageColor = new Color(r, g, b);
+                    
                     if (message.startsWith("/!c/") && message.endsWith("/!e/")) {
                         String commandTrimmed = message.split("/!c/")[1];
                         final String username = commandTrimmed.substring(0, commandTrimmed.length() - 4);
@@ -158,7 +167,7 @@ public class Server extends Thread {
                         if (username != null && !"".equals(username)) {
                             final String id = UUID.randomUUID().toString();
                             
-                            ServerClientModel scm = new ServerClientModel(dis, oos, id, username, s.getPort(), new Server_ServerWorkerListener(this));
+                            ServerClientModel scm = new ServerClientModel(dis, oos, id, username, s.getPort(), messageColor, new Server_ServerWorkerListener(this));
                             this.clientModels.add(scm);
                             
                             this.sendClientIdBack(oos, id);
