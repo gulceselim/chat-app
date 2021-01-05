@@ -32,4 +32,8 @@ public class Client_ClientWorkerListener implements ClientWorkerListener{
     public void onClientMessageSent(Message messageSentByUsername) {
     }
 
+    @Override
+    public void onClientLog(String connectMsg) {
+    }
+
 }

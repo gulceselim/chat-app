@@ -16,4 +16,5 @@ public interface ClientWorkerListener {
     void onClientIdSent(String id);
     void onClientList(ServerClientSerializable[] clientList);
     void onClientMessageSent(Message messageSentByUsername);
+    void onClientLog(String connectMsg);
 }

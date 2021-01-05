@@ -1,5 +1,6 @@
 package chatapplication.Server;
 
+import Utils.ColorUtils;
 import chatapplication.Server.Exceptions.InvalidPortException;
 import java.awt.Color;
 import java.io.*;
@@ -68,6 +69,7 @@ public class Server extends Thread {
         this.eventHandler.emitServerLog(dscMsg, new Color(180, 0, 0));
         this.eventHandler.emitNewUserList(this.clientModels);
         this.sendClientList();
+        this.sendClientLog(dscMsg);
     }
     
     public void onClientSendMessage(String id, String message){
@@ -88,6 +90,7 @@ public class Server extends Thread {
                 this.eventHandler.emitServerLog(msg, new Color(120, 30, 180));
                 this.eventHandler.emitNewUserList(clientModels);
                 this.sendClientList();
+                this.sendClientLog(msg);
             }
         });
     }
@@ -112,6 +115,10 @@ public class Server extends Thread {
         
     }
     
+    private void sendClientLog(String logMessage){
+        sendPacketToAllClients(new Packet(logMessage, "clientLog"));
+    }
+    
     private ServerClientModel findClientModelById(String id){
         ServerClientModel find = null;
         for (int i = 0; i < this.clientModels.size(); i++) {
@@ -123,8 +130,8 @@ public class Server extends Thread {
         return find;
     }
     
+    
     private void sendPacketToAllClients(Packet packet){
-        System.out.println("came here boys from send packet to all clientt");
         this.clientModels.forEach((client) -> {
             try {
                 client.getOos().writeObject((packet));
@@ -152,20 +159,13 @@ public class Server extends Thread {
                     
                     String message = dis.readUTF();
                     
-                    Random rand = new Random();
-                    int low = 60;
-                    int high = 150;
-                    int r = rand.nextInt(high - low) + low;
-                    int g = rand.nextInt(high - low) + low;
-                    int b = rand.nextInt(high - low) + low;
-                    Color messageColor = new Color(r, g, b);
-                    
                     if (message.startsWith("/!c/") && message.endsWith("/!e/")) {
                         String commandTrimmed = message.split("/!c/")[1];
                         final String username = commandTrimmed.substring(0, commandTrimmed.length() - 4);
 
                         if (username != null && !"".equals(username)) {
                             final String id = UUID.randomUUID().toString();
+                            final Color messageColor = ColorUtils.getRandomColor();
                             
                             ServerClientModel scm = new ServerClientModel(dis, oos, id, username, s.getPort(), messageColor, new Server_ServerWorkerListener(this));
                             this.clientModels.add(scm);
@@ -175,7 +175,7 @@ public class Server extends Thread {
                             
                             this.eventHandler.emitNewUserList(this.clientModels);
                             this.eventHandler.emitServerLog(connectMsg, new Color(0, 120, 0));
-
+                            this.sendClientLog(connectMsg);
                         } else {
                             String errorMsg = "✘ There is a connection request from %s:%d with an invalid username".formatted(s.getInetAddress().getHostAddress(), s.getPort());
                             this.eventHandler.emitServerLog(errorMsg, new Color(120, 0, 0));

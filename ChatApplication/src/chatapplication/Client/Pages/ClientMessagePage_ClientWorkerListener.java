@@ -33,4 +33,9 @@ public class ClientMessagePage_ClientWorkerListener implements ClientWorkerListe
     public void onClientMessageSent(Message messageSentByUsername) {
         this.clientMessagePage.onClientMessageSent(messageSentByUsername);
     }
+
+    @Override
+    public void onClientLog(String connectMsg) {
+        this.clientMessagePage.onClientLog(connectMsg);
+    }
 }

@@ -5,18 +5,23 @@
  */
 package chatapplication.Client.Pages;
 
+import Utils.TimeUtils;
 import chatapplication.Client.Client;
-import chatapplication.Client.Pages.Components.MessageComponent;
 import chatapplication.Server.Message;
+import chatapplication.Server.Pages.ServerLogPage;
 import chatapplication.Server.Server;
 import chatapplication.Server.ServerClientModel;
 import chatapplication.Server.ServerClientSerializable;
-import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.Color;
 import javax.swing.*;
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.List;
-import javax.swing.border.EmptyBorder;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 /**
  *
@@ -36,12 +41,10 @@ public class ClientMessagePage extends JFrame {
      * @param client
      */
     public ClientMessagePage(Client client) {
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.client = client;
         initComponents();
-        this.client.getAllClients();
         this.client.getWorkerEventHandler().addWorkerClientListener(new ClientMessagePage_ClientWorkerListener(this));
-
+        this.client.getAllClients();
     }
 
     /**
@@ -81,7 +84,6 @@ public class ClientMessagePage extends JFrame {
     }
     
     public void onClientList(ServerClientSerializable[] clientList){
-        System.out.println("Hello from on client list");
         String[] usernames = new String[clientList.length];
         for (int i = 0; i < usernames.length; i++) {
             usernames[i] = clientList[i].getUsername();
@@ -89,35 +91,36 @@ public class ClientMessagePage extends JFrame {
         lsUsers.setListData(usernames);
     }
     
-    public void onClientMessageSent(Message message){
+    public void onClientMessageSent(Message message){   
+        final String time = TimeUtils.getCurrentFormattedTime();
+        this.addColoredText(tpClientMessages, "[" + time + "] " + message.getClient().getUsername() + " : ", message.getClient().getMessageColor());
+        this.addColoredText(tpClientMessages, message.getMessage() + "\n", message.getClient().getMessageColor());
         
-        MessageComponent messageComp = new MessageComponent(message);
-        messageComp.setAlignmentX(LEFT_ALIGNMENT);
-        Component margin = Box.createRigidArea(new Dimension(0, 10));
-        
-        
-        if(message.getClient().getId().equals(this.client.getId())) {
-            var r = messageComp.getBounds();
-            messageComp.setBounds(320, r.y, r.width, r.height);
-            pnlMessageBoard.add(messageComp);
-
-        } else {
-            var r = messageComp.getBounds();
-            messageComp.setBounds(0, r.y, r.width, r.height);
-            pnlMessageBoard.add(messageComp);
-        }
-        
-       
-     
-        pnlMessageBoard.add(margin);
-        pnlMessageBoard.repaint();
-        
-        this.revalidate();
         JScrollBar vertical = jScrollPane.getVerticalScrollBar();
         vertical.setValue( vertical.getMaximum() );
 
         System.out.println(message);
     }
+    
+    public void onClientLog(String message){
+        this.addColoredText(tpClientMessages,"\t\t\t" + message + "\n", new Color(0, 120, 0));
+    }
+    
+    private void addColoredText(JTextPane pane, String message, Color color) {
+        StyledDocument doc = pane.getStyledDocument();
+        Style style = pane.addStyle("Color Style", null);
+        StyleConstants.setForeground(style, color);
+         try {
+            doc.insertString(doc.getLength(), message, style); 
+         } catch (BadLocationException ex) {
+            Logger.getLogger(ServerLogPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+         }
+        
+    }
+     
+    //private Color changeColorLogMessage(Color color, String logMessages){
+        
+    //}
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -137,7 +140,7 @@ public class ClientMessagePage extends JFrame {
         lsUsers = new javax.swing.JList<>();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane = new javax.swing.JScrollPane();
-        pnlMessageBoard = new javax.swing.JPanel();
+        tpClientMessages = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -185,11 +188,9 @@ public class ClientMessagePage extends JFrame {
 
         jScrollPane.setAlignmentX(0.0F);
 
-        java.awt.FlowLayout flowLayout1 = new java.awt.FlowLayout(java.awt.FlowLayout.LEFT);
-        flowLayout1.setAlignOnBaseline(true);
-        pnlMessageBoard.setLayout(flowLayout1);
-        jScrollPane.setViewportView(pnlMessageBoard);
-        pnlMessageBoard.setBorder(new EmptyBorder(10, 10, 10, 10));
+        tpClientMessages.setFont(tpClientMessages.getFont().deriveFont(tpClientMessages.getFont().getSize()+2f));
+        jScrollPane.setViewportView(tpClientMessages);
+        tpClientMessages.setEditable(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -269,8 +270,8 @@ public class ClientMessagePage extends JFrame {
     private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JList<String> lsUsers;
-    private javax.swing.JPanel pnlMessageBoard;
     private javax.swing.JTextField tfChangeUsername;
     private javax.swing.JTextField tfMessage;
+    private javax.swing.JTextPane tpClientMessages;
     // End of variables declaration//GEN-END:variables
 }

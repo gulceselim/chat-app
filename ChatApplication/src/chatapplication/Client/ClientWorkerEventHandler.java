@@ -49,4 +49,9 @@ public class ClientWorkerEventHandler {
         });
     }
     
+    public void emitClientLog(String connectMsg){
+         clientWorkerListener.forEach((listener) -> {
+            listener.onClientLog(connectMsg);
+        });
+    }
 }

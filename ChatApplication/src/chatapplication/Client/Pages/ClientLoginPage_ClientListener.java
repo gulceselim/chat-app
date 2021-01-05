@@ -18,8 +18,6 @@ public class ClientLoginPage_ClientListener implements ClientListener {
         this.clientLoginPage = clientLoginPage;
     }
     
-    
-    
     @Override
     public void onCreatePage() {
         this.clientLoginPage.onCreatePage();
