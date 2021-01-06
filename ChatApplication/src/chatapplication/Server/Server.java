@@ -69,7 +69,7 @@ public class Server extends Thread {
         this.eventHandler.emitServerLog(dscMsg, new Color(180, 0, 0));
         this.eventHandler.emitNewUserList(this.clientModels);
         this.sendClientList();
-        this.sendClientLog(dscMsg);
+        this.sendClientLog(dscMsg, new Color(180, 0, 0));
     }
     
     public void onClientSendMessage(String id, String message){
@@ -90,7 +90,7 @@ public class Server extends Thread {
                 this.eventHandler.emitServerLog(msg, new Color(120, 30, 180));
                 this.eventHandler.emitNewUserList(clientModels);
                 this.sendClientList();
-                this.sendClientLog(msg);
+                this.sendClientLog(msg, new Color(120, 30, 180));
             }
         });
     }
@@ -115,8 +115,9 @@ public class Server extends Thread {
         
     }
     
-    private void sendClientLog(String logMessage){
-        sendPacketToAllClients(new Packet(logMessage, "clientLog"));
+    private void sendClientLog(String logMessage, Color logMessageColor){
+        Notification notificationObj = new Notification(logMessage, logMessageColor);
+        sendPacketToAllClients(new Packet(notificationObj, "clientLog"));
     }
     
     private ServerClientModel findClientModelById(String id){
@@ -175,7 +176,7 @@ public class Server extends Thread {
                             
                             this.eventHandler.emitNewUserList(this.clientModels);
                             this.eventHandler.emitServerLog(connectMsg, new Color(0, 120, 0));
-                            this.sendClientLog(connectMsg);
+                            this.sendClientLog(connectMsg, new Color(0, 120, 0));
                         } else {
                             String errorMsg = "✘ There is a connection request from %s:%d with an invalid username".formatted(s.getInetAddress().getHostAddress(), s.getPort());
                             this.eventHandler.emitServerLog(errorMsg, new Color(120, 0, 0));

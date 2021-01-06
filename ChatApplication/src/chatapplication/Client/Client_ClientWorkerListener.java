@@ -6,6 +6,7 @@
 package chatapplication.Client;
 
 import chatapplication.Server.Message;
+import chatapplication.Server.Notification;
 import chatapplication.Server.ServerClientSerializable;
 
 /**
@@ -33,7 +34,7 @@ public class Client_ClientWorkerListener implements ClientWorkerListener{
     }
 
     @Override
-    public void onClientLog(String connectMsg) {
+    public void onClientLog(Notification notification) {
     }
 
 }

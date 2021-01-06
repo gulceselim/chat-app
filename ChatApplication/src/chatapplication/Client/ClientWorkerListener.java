@@ -6,6 +6,7 @@
 package chatapplication.Client;
 
 import chatapplication.Server.Message;
+import chatapplication.Server.Notification;
 import chatapplication.Server.ServerClientSerializable;
 
 /**
@@ -16,5 +17,5 @@ public interface ClientWorkerListener {
     void onClientIdSent(String id);
     void onClientList(ServerClientSerializable[] clientList);
     void onClientMessageSent(Message messageSentByUsername);
-    void onClientLog(String connectMsg);
+    void onClientLog(Notification notification);
 }

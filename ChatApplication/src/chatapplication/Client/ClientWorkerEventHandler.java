@@ -6,6 +6,7 @@
 package chatapplication.Client;
 
 import chatapplication.Server.Message;
+import chatapplication.Server.Notification;
 import chatapplication.Server.ServerClientSerializable;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
@@ -49,9 +50,9 @@ public class ClientWorkerEventHandler {
         });
     }
     
-    public void emitClientLog(String connectMsg){
+    public void emitClientLog(Notification notification){
          clientWorkerListener.forEach((listener) -> {
-            listener.onClientLog(connectMsg);
+            listener.onClientLog(notification);
         });
     }
 }

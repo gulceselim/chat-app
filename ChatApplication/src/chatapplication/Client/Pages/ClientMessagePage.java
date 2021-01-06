@@ -8,6 +8,7 @@ package chatapplication.Client.Pages;
 import Utils.TimeUtils;
 import chatapplication.Client.Client;
 import chatapplication.Server.Message;
+import chatapplication.Server.Notification;
 import chatapplication.Server.Pages.ServerLogPage;
 import chatapplication.Server.Server;
 import chatapplication.Server.ServerClientModel;
@@ -102,8 +103,8 @@ public class ClientMessagePage extends JFrame {
         System.out.println(message);
     }
     
-    public void onClientLog(String message){
-        this.addColoredText(tpClientMessages,"\t\t\t" + message + "\n", new Color(0, 120, 0));
+    public void onClientLog(Notification notification){
+        this.addColoredText(tpClientMessages,"\t\t\t" + notification.getLogMessage() + "\n", notification.getLogMessageColor());
     }
     
     private void addColoredText(JTextPane pane, String message, Color color) {

@@ -7,6 +7,7 @@ package chatapplication.Client.Pages;
 
 import chatapplication.Client.ClientWorkerListener;
 import chatapplication.Server.Message;
+import chatapplication.Server.Notification;
 import chatapplication.Server.ServerClientSerializable;
 
 /**
@@ -35,7 +36,7 @@ public class ClientMessagePage_ClientWorkerListener implements ClientWorkerListe
     }
 
     @Override
-    public void onClientLog(String connectMsg) {
-        this.clientMessagePage.onClientLog(connectMsg);
+    public void onClientLog(Notification notification) {
+        this.clientMessagePage.onClientLog(notification);
     }
 }

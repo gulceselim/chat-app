@@ -6,6 +6,7 @@
 package chatapplication.Client;
 
 import chatapplication.Server.Message;
+import chatapplication.Server.Notification;
 import chatapplication.Server.Packet;
 import chatapplication.Server.ServerClientSerializable;
 import java.io.IOException;
@@ -64,7 +65,7 @@ public class ClientWorker {
                 }   this.clientWorkerEventHandler.emitClientList((ServerClientSerializable[])packet.getObj());
             }
             case "clientMessage" -> this.clientWorkerEventHandler.emitClientMessageSent((Message) packet.getObj());
-            case "clientLog" -> this.clientWorkerEventHandler.emitClientLog((String) packet.getObj());
+            case "clientLog" -> this.clientWorkerEventHandler.emitClientLog((Notification) packet.getObj());
             default -> {
             }
         }
