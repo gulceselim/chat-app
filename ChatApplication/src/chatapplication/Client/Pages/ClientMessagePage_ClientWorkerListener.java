@@ -39,4 +39,9 @@ public class ClientMessagePage_ClientWorkerListener implements ClientWorkerListe
     public void onClientLog(Notification notification) {
         this.clientMessagePage.onClientLog(notification);
     }
+
+    @Override
+    public void onUsernameError() {
+        this.clientMessagePage.onUsernameError();
+    }
 }

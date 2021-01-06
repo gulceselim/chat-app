@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatapplication.Client;
+package chatapplication.Client.Pages;
 
+import chatapplication.Client.ClientWorkerListener;
 import chatapplication.Server.Message;
 import chatapplication.Server.Notification;
 import chatapplication.Server.ServerClientSerializable;
@@ -13,16 +14,15 @@ import chatapplication.Server.ServerClientSerializable;
  *
  * @author Selim
  */
-public class Client_ClientWorkerListener implements ClientWorkerListener{
-    Client client;
+public class ClientLoginPage_ClientWorkerListener implements ClientWorkerListener{
+    ClientLoginPage clientLoginPage;
 
-    public Client_ClientWorkerListener(Client client) {
-        this.client = client;
+    public ClientLoginPage_ClientWorkerListener(ClientLoginPage clientLoginPage) {
+        this.clientLoginPage = clientLoginPage;
     }
     
     @Override
     public void onClientIdSent(String id) {
-        this.client.onClientIdSent(id);
     }
 
     @Override
@@ -39,6 +39,7 @@ public class Client_ClientWorkerListener implements ClientWorkerListener{
 
     @Override
     public void onUsernameError() {
+        this.clientLoginPage.onUsernameError();
     }
-
+    
 }

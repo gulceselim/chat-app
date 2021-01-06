@@ -8,7 +8,6 @@ package chatapplication.Server.Pages;
 import Utils.TimeUtils;
 import chatapplication.Server.Server;
 import chatapplication.Server.ServerClientModel;
-import chatapplication.Server.ServerListener;
 import java.awt.Color;
 import java.util.List;
 import java.util.logging.Level;
@@ -96,6 +95,7 @@ public class ServerLogPage extends javax.swing.JFrame{
         jLabel1.setForeground(new java.awt.Color(204, 0, 0));
         jLabel1.setText("Server Log History");
 
+        tpServerLog.setBackground(new java.awt.Color(102, 102, 102));
         tpServerLog.setFont(tpServerLog.getFont().deriveFont(tpServerLog.getFont().getSize()+2f));
         jScrollPane1.setViewportView(tpServerLog);
         tpServerLog.setEditable(false);

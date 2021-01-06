@@ -55,4 +55,10 @@ public class ClientWorkerEventHandler {
             listener.onClientLog(notification);
         });
     }
+    
+    public void emitUsernameError(){
+        clientWorkerListener.forEach((listener) -> {
+            listener.onUsernameError();
+        });
+    }
 }

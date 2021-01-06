@@ -70,7 +70,7 @@ public class Client {
         this.socket = new Socket(this.host, this.port);
         this.dos = new DataOutputStream(socket.getOutputStream());
         Client_ClientWorkerListener listener = new Client_ClientWorkerListener(this);
-
+        
         ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
         this.worker = new ClientWorker(ois, listener);
         this.worker.listen();

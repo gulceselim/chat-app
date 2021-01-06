@@ -9,7 +9,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +18,6 @@ import java.util.logging.Logger;
  * @author rtanyildizi
  */
 public class Server extends Thread {
-
     int port;
     ServerSocket serverSocket;
     DateTimeFormatter formatter;
@@ -52,7 +50,8 @@ public class Server extends Thread {
     @Override
     public void run() {
         String serverMsg = "✔ Server has started successfully at http://%s:%d".formatted("localhost", this.port);
-        this.eventHandler.emitServerLog(serverMsg, new Color(0, 0, 120));
+        Notification notification = new Notification(serverMsg, new Color(0, 0, 200));
+        this.eventHandler.emitServerLog(notification);
         receive();
     }
     
@@ -66,33 +65,41 @@ public class Server extends Thread {
     public void onClientDisconnect(String clientId, String clientUsername) {
         this.clientModels.removeIf((model) -> (model.getId().equals(clientId)));
         String dscMsg = "💔 Client %s disconnected from the server".formatted(clientUsername);
-        this.eventHandler.emitServerLog(dscMsg, new Color(180, 0, 0));
+        Notification notification = new Notification(dscMsg, new Color(240, 0, 0));
+        this.eventHandler.emitServerLog(notification);
         this.eventHandler.emitNewUserList(this.clientModels);
         this.sendClientList();
-        this.sendClientLog(dscMsg, new Color(180, 0, 0));
+        this.sendClientLog(notification);
     }
     
     public void onClientSendMessage(String id, String message){
         var client = this.findClientModelById(id);
         if(client != null){
             String msg = "📨 Client %s sent message".formatted(client.getUsername());
-            this.eventHandler.emitServerLog(msg, new Color(180, 30, 110));
+            Notification notification = new Notification(msg, new Color(140, 0, 255));
+            this.eventHandler.emitServerLog(notification);
             this.sendMessageToClients(client, message);
         }
     }
     
     public void onClientChangeUsername(String id, String newUsername){
-        this.clientModels.forEach((model) -> {
-            if(model.getId().equals(id)){
-                final String oldUsername = model.getUsername();
-                model.setUsername(newUsername);
-                final String msg = "📣 Client %s changed his/her username to %s".formatted(oldUsername,newUsername);
-                this.eventHandler.emitServerLog(msg, new Color(120, 30, 180));
-                this.eventHandler.emitNewUserList(clientModels);
-                this.sendClientList();
-                this.sendClientLog(msg, new Color(120, 30, 180));
-            }
-        });
+            this.clientModels.forEach((model) -> {
+                if(model.getId().equals(id)){
+                    if(checkUsername(newUsername)){
+                        final String oldUsername = model.getUsername();
+                        model.setUsername(newUsername);
+                        final String msg = "📣 Client %s changed his/her username to %s".formatted(oldUsername,newUsername);
+                        Notification notification = new Notification(msg, new Color(255, 126, 0));
+                        this.eventHandler.emitServerLog(notification);
+                        this.eventHandler.emitNewUserList(clientModels);
+                        this.sendClientList();
+                        this.sendClientLog(notification);
+                    }else{ 
+                        sendUsernameErrorToClient(model.getOos());
+                    }
+                }
+            });
+        
     }
     
     public void onSendClientList() {
@@ -115,9 +122,8 @@ public class Server extends Thread {
         
     }
     
-    private void sendClientLog(String logMessage, Color logMessageColor){
-        Notification notificationObj = new Notification(logMessage, logMessageColor);
-        sendPacketToAllClients(new Packet(notificationObj, "clientLog"));
+    private void sendClientLog(Notification notification){
+        sendPacketToAllClients(new Packet(notification, "clientLog"));
     }
     
     private ServerClientModel findClientModelById(String id){
@@ -142,6 +148,14 @@ public class Server extends Thread {
 
         });
     }
+    
+    private void sendUsernameErrorToClient(ObjectOutputStream oos){
+        try {
+            oos.writeObject(new Packet(null, "usernameError"));
+        } catch (IOException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
    
     /**
      * Client'lar tarafından ServerSocket'a yapılan bağlantı taleplerini kabul
@@ -163,8 +177,8 @@ public class Server extends Thread {
                     if (message.startsWith("/!c/") && message.endsWith("/!e/")) {
                         String commandTrimmed = message.split("/!c/")[1];
                         final String username = commandTrimmed.substring(0, commandTrimmed.length() - 4);
-
-                        if (username != null && !"".equals(username)) {
+                        
+                        if (username != null && !"".equals(username) && checkUsername(username)) {
                             final String id = UUID.randomUUID().toString();
                             final Color messageColor = ColorUtils.getRandomColor();
                             
@@ -175,11 +189,14 @@ public class Server extends Thread {
                             String connectMsg = "❤ %s connected to the server from /%s:%d".formatted(username, s.getInetAddress().getHostAddress(), s.getPort());
                             
                             this.eventHandler.emitNewUserList(this.clientModels);
-                            this.eventHandler.emitServerLog(connectMsg, new Color(0, 120, 0));
-                            this.sendClientLog(connectMsg, new Color(0, 120, 0));
+                            Notification notification = new Notification(connectMsg, new Color(0, 160, 0));
+                            this.eventHandler.emitServerLog(notification);
+                            this.sendClientLog(notification);
                         } else {
                             String errorMsg = "✘ There is a connection request from %s:%d with an invalid username".formatted(s.getInetAddress().getHostAddress(), s.getPort());
-                            this.eventHandler.emitServerLog(errorMsg, new Color(120, 0, 0));
+                            Notification notification = new Notification(errorMsg, new Color(160, 0, 0));
+                            this.eventHandler.emitServerLog(notification);
+                            this.sendUsernameErrorToClient(oos);
                         }
                     }
                 } catch (IOException ex) {
@@ -206,5 +223,14 @@ public class Server extends Thread {
             }
         }
         throw new InvalidPortException();
+    }
+    
+    private boolean checkUsername(String username){
+        for (int i = 0; i < clientModels.size(); i++) {
+            if(clientModels.get(i).getUsername().equals(username)){
+                return false;
+            }
+        }
+        return true;
     }
 }

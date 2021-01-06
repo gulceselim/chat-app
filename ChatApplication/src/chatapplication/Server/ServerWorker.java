@@ -82,14 +82,12 @@ public class ServerWorker {
         } else if (message.startsWith("/!m/") && message.endsWith("/!e/")) {
             final String messageContent = message.substring(4, message.length() - 4);
             this.eventHandler.emitClientSendMessage(this.clientId, messageContent);
-            System.out.println(messageContent);
         } else if (message.startsWith("/!rn/") && message.endsWith("/!e/")) {
             String username = message.substring(5, message.length() - 4);
             if (username != null && !"".equals(username)) {
                 this.eventHandler.emitClientChangeUsername(this.clientId, username);
             }
         } else if(message.equals("/!all//!e/")) {
-            System.out.println("Came here boy from message processor");
             this.eventHandler.emitSendClientList();
         }
     }

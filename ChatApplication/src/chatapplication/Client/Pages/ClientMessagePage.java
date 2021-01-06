@@ -7,6 +7,7 @@ package chatapplication.Client.Pages;
 
 import Utils.TimeUtils;
 import chatapplication.Client.Client;
+import chatapplication.Server.Exceptions.UnacceptableUsernameException;
 import chatapplication.Server.Message;
 import chatapplication.Server.Notification;
 import chatapplication.Server.Pages.ServerLogPage;
@@ -100,11 +101,18 @@ public class ClientMessagePage extends JFrame {
         JScrollBar vertical = jScrollPane.getVerticalScrollBar();
         vertical.setValue( vertical.getMaximum() );
 
-        System.out.println(message);
     }
     
     public void onClientLog(Notification notification){
         this.addColoredText(tpClientMessages,"\t\t\t" + notification.getLogMessage() + "\n", notification.getLogMessageColor());
+    }
+    
+    public void onUsernameError(){
+        try {
+            throw new UnacceptableUsernameException();
+        } catch (UnacceptableUsernameException e) {
+            JOptionPane.showMessageDialog(this, "There is already a client connected with that username! Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     private void addColoredText(JTextPane pane, String message, Color color) {
@@ -151,6 +159,8 @@ public class ClientMessagePage extends JFrame {
             }
         });
 
+        tfMessage.setBackground(new java.awt.Color(204, 204, 204));
+        tfMessage.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         tfMessage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tfMessageActionPerformed(evt);
@@ -189,6 +199,8 @@ public class ClientMessagePage extends JFrame {
 
         jScrollPane.setAlignmentX(0.0F);
 
+        tpClientMessages.setBackground(new java.awt.Color(102, 102, 102));
+        tpClientMessages.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         tpClientMessages.setFont(tpClientMessages.getFont().deriveFont(tpClientMessages.getFont().getSize()+2f));
         jScrollPane.setViewportView(tpClientMessages);
         tpClientMessages.setEditable(false);

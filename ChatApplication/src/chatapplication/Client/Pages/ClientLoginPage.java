@@ -7,6 +7,8 @@ package chatapplication.Client.Pages;
 
 import chatapplication.Server.Pages.ServerHomePage;
 import chatapplication.Client.Client;
+import chatapplication.Server.Exceptions.UnacceptableUsernameException;
+import chatapplication.Server.Server;
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,14 +36,14 @@ public class ClientLoginPage extends javax.swing.JFrame {
      * Bağlanma işlemi başarısız olursa hata diyaloğu gösterir.
      */
     private void connectServer() {
-         try {
+        try {
             int port = Integer.parseInt(tfClientPort.getText());
             String username = tfClientUsername.getText();
             this.client = new Client("localhost", port, username);
             this.client.connect();
+            this.client.getWorkerEventHandler().addWorkerClientListener(new ClientLoginPage_ClientWorkerListener(this));
             this.client.getEventHandler().addListener(new ClientLoginPage_ClientListener(this));
             
-            this.setVisible(false);
         } catch(IOException e) {
             this.setVisible(true);
             JOptionPane.showMessageDialog(this, "Error occured while connecting to the server. Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -49,12 +51,26 @@ public class ClientLoginPage extends javax.swing.JFrame {
     }
     
     public void onCreatePage() {
-            System.out.println(this.client.getId());
-            ClientMessagePage clientMessagePage = new ClientMessagePage(this.client);
-            // clientMessagePage sayfasını ekranın merkezine yerleştirir.
-            clientMessagePage.pack();
-            clientMessagePage.setLocationRelativeTo(null);
-            clientMessagePage.setVisible(true);
+        ClientMessagePage clientMessagePage = new ClientMessagePage(this.client);
+        // clientMessagePage sayfasını ekranın merkezine yerleştirir.
+        clientMessagePage.pack();
+        clientMessagePage.setLocationRelativeTo(null);
+        clientMessagePage.setVisible(true);
+        this.setVisible(false);
+    }
+    
+    public void onUsernameError(){
+        if(this.isVisible()){
+            try {
+                this.client.disconnect();
+                throw new UnacceptableUsernameException();
+            } catch (UnacceptableUsernameException e) {
+                this.client = null;
+                JOptionPane.showMessageDialog(this, "There is already a client connected with that username! Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch(IOException e){
+
+            }
+        }
     }
 
     /**
@@ -179,7 +195,6 @@ public class ClientLoginPage extends javax.swing.JFrame {
         try {
             // Use the system look and feel for the swing application
             String className = UIManager.getSystemLookAndFeelClassName();
-            System.out.println("className = " + className);
             UIManager.setLookAndFeel(className);
             
         } catch (ClassNotFoundException e) {

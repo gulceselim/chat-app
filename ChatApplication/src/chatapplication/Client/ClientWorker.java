@@ -59,13 +59,11 @@ public class ClientWorker {
         switch (packet.getObjName()) {
             case "clientId" -> this.clientWorkerEventHandler.emitClientIdSent((String)packet.getObj());
             case "clientList" -> {
-                var array = (ServerClientSerializable[]) packet.getObj();
-                for(int i = 0; i < array.length; ++i) {
-                    System.out.println(array[i].getId());
-                }   this.clientWorkerEventHandler.emitClientList((ServerClientSerializable[])packet.getObj());
+                this.clientWorkerEventHandler.emitClientList((ServerClientSerializable[])packet.getObj());
             }
             case "clientMessage" -> this.clientWorkerEventHandler.emitClientMessageSent((Message) packet.getObj());
             case "clientLog" -> this.clientWorkerEventHandler.emitClientLog((Notification) packet.getObj());
+            case "usernameError" -> this.clientWorkerEventHandler.emitUsernameError();
             default -> {
             }
         }

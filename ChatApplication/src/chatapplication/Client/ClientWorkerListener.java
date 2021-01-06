@@ -18,4 +18,5 @@ public interface ClientWorkerListener {
     void onClientList(ServerClientSerializable[] clientList);
     void onClientMessageSent(Message messageSentByUsername);
     void onClientLog(Notification notification);
+    void onUsernameError();
 }

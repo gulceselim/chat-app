@@ -37,11 +37,11 @@ public class ServerEventHandler {
      * @param color Mesajın görüntleneceği renk
      * @author rtanyildizi
      */
-    public void emitServerLog(String message, Color color) {
+    public void emitServerLog(Notification notification) {
         // Tüm ServerListener'lar için onMessage methodunu çalıştır.
-        final String formattedMessage = "%s\n\r".formatted(message);
+        final String formattedMessage = "%s\n\r".formatted(notification.getLogMessage());
         serverListeners.forEach(listener -> {
-            listener.onServerLog(formattedMessage, color);
+            listener.onServerLog(formattedMessage, notification.getLogMessageColor());
         });
     }
     

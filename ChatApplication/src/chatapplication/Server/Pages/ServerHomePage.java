@@ -151,7 +151,6 @@ public class ServerHomePage extends javax.swing.JFrame {
         try {
             // Use the system look and feel for the swing application
             String className = UIManager.getSystemLookAndFeelClassName();
-            System.out.println("className = " + className);
             UIManager.setLookAndFeel(className);
 
         } catch (ClassNotFoundException e) {
